@@ -32,3 +32,5 @@ aksara-design.zip
 .idea/
 .DS_Store
 Thumbs.db
+.neon
+node_modules/
