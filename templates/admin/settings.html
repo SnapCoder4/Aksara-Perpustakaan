@@ -13,15 +13,62 @@
   </form>
 
   <section class="card stack gap-16">
-    <h2>Petugas</h2>
-    <div>{% for s in staff %}<div class="list-item"><span class="info"><b>{{ s.full_name }}</b><span>{{ s.username }}</span></span></div>{% endfor %}</div>
+    <h2>{{ "Petugas" if is_super else "Akun saya" }}</h2>
+    {% if me.must_change %}<p class="hint" role="alert"><b>Kata sandi Anda sementara. Ganti sekarang untuk melanjutkan.</b></p>{% endif %}
+    {% if is_super %}
+    <div class="table-wrap"><table class="table">
+      <thead><tr><th>Nama</th><th>Username</th><th>Peran</th><th>Dibuat</th><th><span class="sr-only">Aksi</span></th></tr></thead>
+      <tbody>{% for s in staff %}
+        <tr>
+          <td><b>{{ s.full_name }}</b>{% if not s.aktif %} <span class="chip chip-warn">Nonaktif</span>{% endif %}</td>
+          <td>{{ s.username }}</td>
+          <td>
+            <form method="post" action="/admin/pengaturan/petugas/{{ s.id }}/peran">
+              <select class="input" name="role" aria-label="Peran {{ s.username }}" onchange="this.form.submit()">
+                <option value="admin" {{ "selected" if s.role == "admin" }}>Admin</option>
+                <option value="super_admin" {{ "selected" if s.role == "super_admin" }}>Super admin</option>
+              </select>
+              <noscript><button class="btn btn-ghost btn-sm" type="submit">Simpan</button></noscript>
+            </form>
+          </td>
+          <td>{{ s.dibuat | tgl if s.dibuat else "-" }}</td>
+          <td><div class="actions">
+            <form method="post" action="/admin/pengaturan/petugas/{{ s.id }}/status"{% if s.aktif %} data-confirm="Nonaktifkan {{ s.username }}? Akun ini tidak bisa login lagi."{% endif %}>
+              <input type="hidden" name="aktif" value="{{ 0 if s.aktif else 1 }}">
+              <button class="btn btn-ghost btn-sm" type="submit">{{ "Nonaktifkan" if s.aktif else "Aktifkan" }}</button>
+            </form>
+            {% if s.id != me.id %}
+            <form method="post" action="/admin/pengaturan/petugas/{{ s.id }}/reset" class="row gap-12">
+              <input class="input" type="password" name="password" placeholder="Sandi sementara" required minlength="8" maxlength="72" autocomplete="new-password" aria-label="Kata sandi sementara untuk {{ s.username }}">
+              <button class="btn btn-ghost btn-sm" type="submit">Reset</button>
+            </form>
+            {% endif %}
+          </div></td>
+        </tr>{% endfor %}
+      </tbody>
+    </table></div>
+    {% else %}
+    <div><div class="list-item"><span class="info"><b>{{ me.full_name }}</b><span>{{ me.username }}</span></span></div></div>
+    {% endif %}
+
+    <form method="post" action="/admin/pengaturan/sandi" class="stack gap-12">
+      <h3 class="h3" style="font-size:18px">Ganti kata sandi</h3>
+      <div class="field"><label for="lama">Kata sandi lama</label><input class="input" type="password" id="lama" name="lama" required maxlength="72" autocomplete="current-password"></div>
+      <div class="field"><label for="baru">Kata sandi baru</label><input class="input" type="password" id="baru" name="baru" required minlength="8" maxlength="72" autocomplete="new-password"><span class="hint">Minimal 8 karakter.</span></div>
+      <div class="field"><label for="ulang">Ulangi kata sandi baru</label><input class="input" type="password" id="ulang" name="ulang" required minlength="8" maxlength="72" autocomplete="new-password"></div>
+      <button class="btn btn-ghost" type="submit" style="align-self:flex-start">Ganti kata sandi</button>
+    </form>
+
+    {% if is_super %}
     <form method="post" action="/admin/pengaturan/petugas" class="stack gap-12">
       <h3 class="h3" style="font-size:18px">Tambah petugas</h3>
       <div class="field"><label for="full_name">Nama lengkap</label><input class="input" id="full_name" name="full_name" required maxlength="100"></div>
       <div class="field"><label for="username">Username</label><input class="input" id="username" name="username" required maxlength="50" autocomplete="off"></div>
-      <div class="field"><label for="password">Kata sandi</label><input class="input" type="password" id="password" name="password" required maxlength="72" autocomplete="new-password"><span class="hint">Minimal 8 karakter.</span></div>
+      <div class="field"><label for="password">Kata sandi sementara</label><input class="input" type="password" id="password" name="password" required maxlength="72" autocomplete="new-password"><span class="hint">Minimal 8 karakter. Wajib diganti saat login pertama.</span></div>
+      <div class="field"><label for="role">Peran</label><select class="input" id="role" name="role"><option value="admin" selected>Admin</option><option value="super_admin">Super admin</option></select></div>
       <button class="btn btn-ghost" type="submit" style="align-self:flex-start">Tambah petugas</button>
     </form>
+    {% endif %}
   </section>
 </div>
 {% endblock %}

@@ -1,17 +1,19 @@
 import csv
 import io
+import logging
 import re
 from datetime import date
 from math import ceil
 from urllib.parse import urlparse
-from fastapi import APIRouter, Depends, Form, Request
+from fastapi import APIRouter, Depends, Form, HTTPException, Request
 from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse, Response
 from sqlalchemy import func, or_
 from sqlalchemy.orm import Session
 from starlette.datastructures import UploadFile
 from app import hero, services
-from app.auth import hash_password
-from app.core import env, flash, get_db, render, require_admin
+from app.auth import hash_password, verify_password
+from app.core import Redirect, env, flash, get_db, render, require_admin
+from app.database import SessionLocal
 from app.models import Book, Borrowing, Category, Librarian, Member, Notification, Wishlist
 from app.routers.account import check_password, validate_profile
 from app.uploads import delete_cover, save_cover
@@ -30,8 +32,46 @@ def paginate(query, page: int, per: int = PER_PAGE):
     return query.offset((page - 1) * per).limit(per).all(), page, pages, total
 
 
-def guard(request: Request):
-    return require_admin(request)
+audit = logging.getLogger("uvicorn.error")
+
+
+def _staff_now(request: Request):
+    """Petugas dari database (bukan dari cookie): akun nonaktif/dihapus langsung kehilangan akses."""
+    u = request.session.get("user")
+    if not u or u.get("role") != "admin":
+        return None
+    with SessionLocal() as db:
+        s = db.get(Librarian, u.get("id"))
+        if s and s.aktif:
+            db.expunge(s)
+            return s
+    return None
+
+
+def guard(request: Request, pending_ok: bool = False) -> Librarian:
+    require_admin(request)
+    s = _staff_now(request)
+    if not s:
+        request.session.clear()
+        raise Redirect("/login")
+    if s.must_change and not pending_ok:
+        flash(request, "Ganti kata sandi sementara Anda dulu di Pengaturan.", "warn")
+        raise Redirect("/admin/pengaturan")
+    return s
+
+
+def super_guard(request: Request) -> Librarian:
+    s = guard(request)
+    if s.role != "super_admin":
+        raise HTTPException(403, "Hanya super admin yang boleh melakukan ini.")
+    return s
+
+
+def same_origin(request: Request):
+    """Tolak POST lintas-situs (tambahan di atas cookie SameSite=lax)."""
+    o = request.headers.get("origin")
+    if o and urlparse(o).netloc != request.headers.get("host"):
+        raise HTTPException(403, "Permintaan ditolak.")
 
 
 def pct(now: int, prev: int):
@@ -228,7 +268,7 @@ def _hero_api_denied(request: Request):
     user = request.session.get("user")
     if not user:
         return JSONResponse({"ok": False, "error": "Sesi berakhir. Masuk kembali sebagai admin."}, 401)
-    if user.get("role") != "admin":
+    if user.get("role") != "admin" or not _staff_now(request):
         return JSONResponse({"ok": False, "error": "Hanya admin yang boleh mengubah gambar hero."}, 403)
     origin = request.headers.get("origin")
     if request.headers.get("x-requested-with") != "fetch" or (origin and urlparse(origin).netloc != request.headers.get("host")):
@@ -573,9 +613,10 @@ def reports_csv(request: Request, dari: str = "", sampai: str = "", db: Session 
 # ---------- Pengaturan ----------
 @router.get("/pengaturan")
 def settings_page(request: Request, db: Session = Depends(get_db)):
-    guard(request)
-    return render(request, "admin/settings.html", settings=services.get_settings(db),
-                  staff=db.query(Librarian).order_by(Librarian.id).all(), errors={}, active_menu="pengaturan")
+    me = guard(request, pending_ok=True)
+    staff = db.query(Librarian).order_by(Librarian.id).all() if me.role == "super_admin" else [db.get(Librarian, me.id)]
+    return render(request, "admin/settings.html", settings=services.get_settings(db), staff=staff, me=me,
+                  is_super=me.role == "super_admin", errors={}, active_menu="pengaturan")
 
 
 @router.post("/pengaturan")
@@ -594,19 +635,99 @@ def settings_save(request: Request, loan_days: str = Form(""), fine_per_day: str
     return RedirectResponse("/admin/pengaturan", 303)
 
 
+def _back(request: Request, msg: str, kind: str = "ok"):
+    flash(request, msg, kind)
+    return RedirectResponse("/admin/pengaturan", 303)
+
+
+def _active_supers(db: Session, excluding: int | None = None) -> int:
+    q = db.query(Librarian).filter(Librarian.role == "super_admin", Librarian.aktif.is_(True))
+    return (q.filter(Librarian.id != excluding) if excluding else q).count()
+
+
+@router.post("/pengaturan/sandi")
+def password_change(request: Request, lama: str = Form(""), baru: str = Form(""), ulang: str = Form(""),
+                    db: Session = Depends(get_db)):
+    me = guard(request, pending_ok=True)
+    same_origin(request)
+    s = db.get(Librarian, me.id)
+    if len(lama.encode()) > 72 or not verify_password(lama, s.password):
+        return _back(request, "Kata sandi lama salah.", "err")
+    if (e := check_password(baru)):
+        return _back(request, e, "err")
+    if baru != ulang:
+        return _back(request, "Konfirmasi kata sandi baru tidak sama.", "err")
+    s.password, s.must_change = hash_password(baru), False
+    db.commit()
+    audit.info("AUDIT %s ganti-sandi petugas=%s", services.today(), s.username)
+    return _back(request, "Kata sandi diganti.")
+
+
 @router.post("/pengaturan/petugas")
 def staff_create(request: Request, username: str = Form(""), full_name: str = Form(""), password: str = Form(""),
-                 db: Session = Depends(get_db)):
-    guard(request)
+                 role: str = Form("admin"), db: Session = Depends(get_db)):
+    me = super_guard(request)
+    same_origin(request)
     username, full_name = username.strip(), full_name.strip()
     if not re.match(r"^[A-Za-z0-9_.-]{3,50}$", username) or not (2 <= len(full_name) <= 100):
-        flash(request, "Username 3-50 karakter (huruf, angka, . _ -) dan nama lengkap wajib diisi.", "err")
-    elif (e := check_password(password)):
-        flash(request, e, "err")
-    elif db.query(Librarian).filter(Librarian.username == username).first():
-        flash(request, "Username sudah dipakai.", "err")
-    else:
-        db.add(Librarian(username=username, full_name=full_name, password=hash_password(password)))
-        db.commit()
-        flash(request, "Petugas ditambahkan.")
-    return RedirectResponse("/admin/pengaturan", 303)
+        return _back(request, "Username 3-50 karakter (huruf, angka, . _ -) dan nama lengkap wajib diisi.", "err")
+    if (e := check_password(password)):
+        return _back(request, e, "err")
+    if db.query(Librarian).filter(Librarian.username == username).first():
+        return _back(request, "Username sudah dipakai.", "err")
+    role = role if role in ("admin", "super_admin") else "admin"
+    db.add(Librarian(username=username, full_name=full_name, password=hash_password(password), role=role,
+                     must_change=True, dibuat=services.today()))
+    db.commit()
+    audit.info("AUDIT %s tambah-petugas oleh=%s baru=%s peran=%s", services.today(), me.username, username, role)
+    return _back(request, "Petugas ditambahkan. Kata sandi sementara wajib diganti saat login pertama.")
+
+
+def _target(db: Session, sid: int) -> Librarian:
+    t = db.get(Librarian, sid)
+    if not t:
+        raise HTTPException(404)
+    return t
+
+
+@router.post("/pengaturan/petugas/{sid}/status")
+def staff_status(request: Request, sid: int, aktif: str = Form("0"), db: Session = Depends(get_db)):
+    me = super_guard(request)
+    same_origin(request)
+    t, on = _target(db, sid), aktif == "1"
+    if not on and t.role == "super_admin" and _active_supers(db, excluding=t.id) == 0:
+        return _back(request, "Tidak bisa menonaktifkan satu-satunya super admin.", "err")
+    t.aktif = on
+    db.commit()
+    audit.info("AUDIT %s %s oleh=%s target=%s", services.today(), "aktifkan" if on else "nonaktifkan", me.username, t.username)
+    return _back(request, "Petugas diaktifkan." if on else "Petugas dinonaktifkan.")
+
+
+@router.post("/pengaturan/petugas/{sid}/peran")
+def staff_role(request: Request, sid: int, role: str = Form(""), db: Session = Depends(get_db)):
+    me = super_guard(request)
+    same_origin(request)
+    t = _target(db, sid)
+    if role not in ("admin", "super_admin"):
+        return _back(request, "Peran tidak valid.", "err")
+    if role == "admin" and t.role == "super_admin" and _active_supers(db, excluding=t.id) == 0:
+        return _back(request, "Tidak bisa menurunkan satu-satunya super admin.", "err")
+    t.role = role
+    db.commit()
+    audit.info("AUDIT %s ubah-peran oleh=%s target=%s peran=%s", services.today(), me.username, t.username, role)
+    return _back(request, "Peran diperbarui.")
+
+
+@router.post("/pengaturan/petugas/{sid}/reset")
+def staff_reset(request: Request, sid: int, password: str = Form(""), db: Session = Depends(get_db)):
+    me = super_guard(request)
+    same_origin(request)
+    t = _target(db, sid)
+    if t.id == me.id:
+        return _back(request, "Ganti kata sandi sendiri lewat form di bawah.", "err")
+    if (e := check_password(password)):
+        return _back(request, e, "err")
+    t.password, t.must_change = hash_password(password), True
+    db.commit()
+    audit.info("AUDIT %s reset-sandi oleh=%s target=%s", services.today(), me.username, t.username)
+    return _back(request, f"Kata sandi sementara untuk {t.username} ditetapkan. Wajib diganti saat login.")

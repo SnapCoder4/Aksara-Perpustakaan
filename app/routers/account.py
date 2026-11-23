@@ -1,4 +1,5 @@
 import re
+import time
 from math import ceil
 from fastapi import APIRouter, Depends, Form, Request
 from fastapi.responses import RedirectResponse
@@ -11,6 +12,26 @@ from app import services
 router = APIRouter()
 EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 PHONE_RE = re.compile(r"^[0-9+\-\s]{8,20}$")
+
+# Pembatasan login: dalam memori (per proses). 5 gagal per username / 20 per IP -> kunci 10 menit.
+_FAILS: dict[str, list[float]] = {}
+WINDOW, LIMITS = 600, {"u": 5, "ip": 20}
+
+
+def _locked(keys: list[str]) -> bool:
+    now = time.time()
+    for k in keys:
+        _FAILS[k] = [t for t in _FAILS.get(k, []) if now - t < WINDOW]
+        if len(_FAILS[k]) >= LIMITS[k.split(":", 1)[0]]:
+            return True
+    return False
+
+
+def _fail(keys: list[str]):
+    for k in keys:
+        _FAILS.setdefault(k, []).append(time.time())
+    if len(_FAILS) > 5000:  # cegah memori membengkak
+        _FAILS.clear()
 
 
 def check_password(pw: str) -> str | None:
@@ -52,11 +73,15 @@ def login(request: Request, identifier: str = Form(""), password: str = Form("")
           next: str = Form(""), db: Session = Depends(get_db)):
     """Satu form untuk semua: username petugas (akun bawaan) atau email/nomor anggota (harus daftar dulu)."""
     identifier = identifier.strip()
-    error, user = "Akun atau kata sandi salah.", None
+    keys = [f"u:{identifier.lower()[:100]}", f"ip:{request.client.host if request.client else '-'}"]
+    if _locked(keys):
+        return render(request, "auth/login.html", http_status=429, next=safe_next(next) or "",
+                      error="Terlalu banyak percobaan gagal. Coba lagi dalam 10 menit.", identifier=identifier)
+    error, user = "Username atau kata sandi salah.", None
     if identifier and password and len(password.encode()) <= 72:
         staff = db.query(Librarian).filter(Librarian.username == identifier).first()
         if staff:
-            if verify_password(password, staff.password):
+            if verify_password(password, staff.password) and staff.aktif:
                 user = {"role": "admin", "id": staff.id, "name": staff.full_name, "username": staff.username}
         else:
             m = db.query(Member).filter((Member.email == identifier.lower()) | (Member.id_member == identifier)).first()
@@ -68,8 +93,10 @@ def login(request: Request, identifier: str = Form(""), password: str = Form("")
                 else:
                     user = {"role": "member", "id_member": m.id_member, "name": m.nama}
     if not user:
+        _fail(keys)
         return render(request, "auth/login.html", http_status=401, next=safe_next(next) or "",
                       error=error, identifier=identifier)
+    _FAILS.pop(keys[0], None)
     request.session.clear()
     request.session["user"] = user
     flash(request, f"Selamat datang kembali, {user['name']}.")

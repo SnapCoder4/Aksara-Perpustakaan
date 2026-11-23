@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Text, ForeignKey
+from sqlalchemy import Boolean, Column, Integer, String, Text, ForeignKey
 from sqlalchemy.orm import relationship
 from app.database import Base
 
@@ -9,7 +9,12 @@ class Librarian(Base):
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String(50), unique=True, nullable=False)
     full_name = Column(String(100), nullable=False)
-    password = Column(String(255), nullable=False)
+    password = Column(String(255), nullable=False)  # hash bcrypt
+    # kolom baru (ditambahkan lewat app/migrate.py)
+    role = Column(String(20), nullable=False, default="admin", server_default="admin")  # super_admin | admin
+    aktif = Column(Boolean, nullable=False, default=True, server_default="true")
+    must_change = Column(Boolean, nullable=False, default=False, server_default="false")
+    dibuat = Column(String(20))
 
 # 2. Master Table: Categories (baru)
 class Category(Base):

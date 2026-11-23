@@ -21,6 +21,10 @@ NEW_COLUMNS = {
         ("email", "VARCHAR(120)"), ("password", "VARCHAR(255)"),
         ("status", "VARCHAR(20) DEFAULT 'Aktif'"), ("bergabung", "VARCHAR(20)"),
     ],
+    "librarians": [
+        ("role", "VARCHAR(20) NOT NULL DEFAULT 'admin'"), ("aktif", "BOOLEAN NOT NULL DEFAULT TRUE"),
+        ("must_change", "BOOLEAN NOT NULL DEFAULT FALSE"), ("dibuat", "VARCHAR(20)"),
+    ],
     "borrowings": [("jatuh_tempo", "VARCHAR(20)"), ("denda", "INTEGER DEFAULT 0")],
 }
 
@@ -89,6 +93,9 @@ def run():
             _make_librarian_nullable(conn)
 
         conn.execute(text("CREATE UNIQUE INDEX IF NOT EXISTS ux_members_email ON members(email) WHERE email IS NOT NULL"))
+        conn.execute(text("""UPDATE librarians SET role = 'super_admin'
+                             WHERE id = (SELECT MIN(id) FROM librarians)
+                               AND NOT EXISTS (SELECT 1 FROM librarians WHERE role = 'super_admin')"""))
         conn.execute(text("UPDATE borrowings SET denda = 0 WHERE denda IS NULL"))
         conn.execute(text("UPDATE members SET status = 'Aktif' WHERE status IS NULL"))
 

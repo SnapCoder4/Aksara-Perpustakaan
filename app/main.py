@@ -8,7 +8,7 @@ from sqlalchemy import inspect
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.middleware.sessions import SessionMiddleware
 
-from app import migrate
+from app import migrate, services
 from app.auth import hash_password
 from app.core import Redirect, render
 from app.database import SessionLocal, engine
@@ -20,7 +20,8 @@ from app.routers import account, admin, public
 _tables = inspect(engine).get_table_names()
 if "books" not in _tables:
     migrate.run()
-elif "cover_path" not in {c["name"] for c in inspect(engine).get_columns("books")}:
+elif ("cover_path" not in {c["name"] for c in inspect(engine).get_columns("books")}
+      or "role" not in {c["name"] for c in inspect(engine).get_columns("librarians")}):
     raise RuntimeError("Skema database belum dimigrasi. Backup library.db lalu jalankan: python -m app.migrate")
 
 mimetypes.add_type("image/webp", ".webp")  # registri Windows bisa tidak mengenal webp
@@ -41,7 +42,7 @@ def seed_data():
     """Data awal hanya bila tabel kosong (perilaku asli proyek)."""
     db = SessionLocal()
     if not db.query(Librarian).first():
-        db.add(Librarian(username="admin", full_name="Petugas Utama", password=hash_password("admin123")))
+        db.add(Librarian(username="admin", full_name="Petugas Utama", password=hash_password("admin123"), role="super_admin", dibuat=services.today()))
     if not db.query(Book).first():
         db.add_all([
             Book(kode_buku="BK001", judul="Clean Code", penulis="Robert C. Martin", stok=5),
