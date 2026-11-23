@@ -189,3 +189,7 @@ dialog.modal::backdrop { background: rgba(5, 11, 28, .65); backdrop-filter: blur
   .toasts { left: 16px; right: 16px; bottom: 16px; }
 }
 .pager[hidden] { display: none; }
+
+@media (max-width: 640px) {
+  .table:has(td > .empty) { min-width: 0; } /* keadaan kosong tidak memicu scroll horizontal */
+}

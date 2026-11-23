@@ -92,3 +92,11 @@
   .grid-stats { grid-template-columns: 1fr; } .grid-stats .span2 { grid-column: auto; }
   .bars, .bar-labels { gap: 4px; }
 }
+
+/* Mobile < 480px */
+@media (max-width: 480px) {
+  .grid-stats[style] { grid-template-columns: minmax(0, 1fr) !important; } /* inline style di laporan */
+  .stat .n { font-size: 28px; overflow-wrap: anywhere; }
+  .stat .l { overflow-wrap: anywhere; }
+  .stat .n[style] { font-size: 24px !important; white-space: nowrap; }
+}

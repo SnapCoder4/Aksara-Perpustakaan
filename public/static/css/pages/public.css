@@ -116,3 +116,15 @@ dialog.hero-modal { max-width: 720px; max-height: calc(100dvh - 24px); overflow-
 .hm-actions #hm-reset { margin-right: auto; }
 @media (max-width: 560px) { .hm-compare { gap: 8px; } .hm-panel { max-height: 34dvh; } dialog.hero-modal .modal-body { padding: 16px; gap: 10px; } }
 .hero-modal [hidden] { display: none !important; }  /* .btn { display: inline-flex } mengalahkan atribut hidden */
+
+/* Mobile 360-430px */
+@media (max-width: 640px) {
+  .hero { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+  .hero > div { min-width: 0; }
+  .search-pill { max-width: 100%; box-sizing: border-box; padding-left: 16px; }
+  .search-pill input { min-width: 0; width: 100%; }
+  .search-pill .btn { flex: none; padding-inline: 18px; }
+  .wrap.section { padding-left: 20px; padding-right: 20px; } /* .section memakai shorthand padding yang menimpa .wrap */
+  .grid-books .cover, .catalog-grid .cover { max-height: 240px; padding: 12px 10px 10px 16px; }
+  .cover .cn { font-size: 16px; }
+}
