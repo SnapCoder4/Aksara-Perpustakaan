@@ -9,7 +9,9 @@ import re
 from pathlib import Path
 from time import sleep
 
-LOCAL_DIR = {"covers": Path("static/uploads/covers"), "hero": Path("static/img/hero")}
+from app.paths import STATIC_DIR
+
+LOCAL_DIR = {"covers": STATIC_DIR / "uploads" / "covers", "hero": STATIC_DIR / "img" / "hero"}
 LOCAL_URL = {"covers": "/static/uploads/covers/", "hero": "/static/img/hero/"}
 PREFIX = "aksara"
 _CLOUD_ID = re.compile(r"^https://res\.cloudinary\.com/([^/]+)/image/upload/(?:v\d+/)?(aksara/.+?)\.webp$")

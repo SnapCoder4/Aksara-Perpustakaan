@@ -2,13 +2,14 @@ import mimetypes
 import os
 import secrets
 from fastapi import FastAPI, Request
-from fastapi.responses import RedirectResponse
+from fastapi.responses import PlainTextResponse, RedirectResponse, Response
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy import inspect
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.middleware.sessions import SessionMiddleware
 
 from app import migrate, services
+from app.paths import STATIC_DIR
 from app.auth import hash_password
 from app.core import Redirect, render
 from app.database import SessionLocal, engine
@@ -39,7 +40,12 @@ if not _secret:
 app.add_middleware(SessionMiddleware, secret_key=_secret, session_cookie="library_session",
                    same_site="lax", max_age=60 * 60 * 24 * 7)
 
-app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
+
+
+@app.get("/favicon.ico", include_in_schema=False)
+def favicon():
+    return Response(status_code=204)  # tidak ada ikon .ico; cegah 404 berisik
 
 
 def seed_data():
@@ -73,9 +79,13 @@ async def _redirect(request: Request, exc: Redirect):
 
 @app.exception_handler(StarletteHTTPException)
 async def _http_error(request: Request, exc: StarletteHTTPException):
-    if exc.status_code == 404:
-        return render(request, "public/404.html", http_status=404)
-    return render(request, "public/404.html", http_status=exc.status_code, message=str(exc.detail))
+    try:
+        if exc.status_code == 404:
+            return render(request, "public/404.html", http_status=404)
+        return render(request, "public/404.html", http_status=exc.status_code, message=str(exc.detail))
+    except Exception:  # template/DB bermasalah: jangan ubah 404 menjadi 500
+        return PlainTextResponse("Halaman tidak ditemukan" if exc.status_code == 404 else str(exc.detail),
+                                 status_code=exc.status_code)
 
 
 app.include_router(public.router)

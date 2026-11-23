@@ -1,11 +1,12 @@
 import os
 from dotenv import load_dotenv
+from app.paths import BASE_DIR
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 
-load_dotenv()
+load_dotenv(BASE_DIR / ".env")
 
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./library.db")
+DATABASE_URL = os.getenv("DATABASE_URL", f"sqlite:///{(BASE_DIR / 'library.db').as_posix()}")
 # Neon/Render memberi "postgresql://..."; SQLAlchemy butuh driver psycopg (v3) secara eksplisit.
 if DATABASE_URL.startswith(("postgres://", "postgresql://")):
     DATABASE_URL = "postgresql+psycopg://" + DATABASE_URL.split("://", 1)[1]

@@ -5,8 +5,9 @@ from fastapi import UploadFile
 from fastapi.concurrency import run_in_threadpool
 from PIL import Image, ImageOps
 from app import storage
+from app.paths import STATIC_DIR
 
-HERO_DIR = Path("static/img/hero")
+HERO_DIR = STATIC_DIR / "img" / "hero"
 SLOTS = (1, 2, 3)
 MAX_BYTES = 8 * 1024 * 1024
 CLOUD_MAX_BYTES = 4 * 1024 * 1024  # Vercel menolak body request di atas 4,5 MB (413), sisakan ruang untuk multipart

@@ -5,11 +5,12 @@ from fastapi import Request
 from fastapi.responses import HTMLResponse
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 from app.database import SessionLocal
+from app.paths import TEMPLATES_DIR
 
 BULAN = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"]
 
 env = Environment(
-    loader=FileSystemLoader("templates"),
+    loader=FileSystemLoader(str(TEMPLATES_DIR)),
     autoescape=select_autoescape(["html"]),
     auto_reload=True,
 )
