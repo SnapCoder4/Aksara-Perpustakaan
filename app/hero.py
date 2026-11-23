@@ -37,9 +37,13 @@ def hero_images(db=None) -> list[str | None]:
     """URL tiap slot, None bila belum ada gambar. Lokal: cek file (?v=mtime). Cloud: versi gambar disimpan di tabel settings."""
     if storage.enabled():
         cloud = storage._cld().config().cloud_name
+        from app.models import Setting
+        vers = {}
+        if db is not None:
+            vers = {r.key: r.value for r in db.query(Setting).filter(Setting.key.in_([f"hero_{n}" for n in SLOTS]))}
         out = []
         for n in SLOTS:
-            v = _cloud_version(db, n) if db is not None else None
+            v = int(vers[f"hero_{n}"]) if vers.get(f"hero_{n}", "").isdigit() else None
             out.append(f"https://res.cloudinary.com/{cloud}/image/upload/v{v}/{storage.PREFIX}/hero/hero-{n}.webp" if v else None)
         return out
     return [f"/static/img/hero/hero-{n}.webp?v={int(path(n).stat().st_mtime)}" if path(n).is_file() else None for n in SLOTS]

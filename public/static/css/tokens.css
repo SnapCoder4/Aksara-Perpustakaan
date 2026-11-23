@@ -1,0 +1,36 @@
+/* Design tokens Aksara. Gelap = tampilan awal, terang lewat [data-theme="light"].
+   Nilai disalin dari blok .t di file desain (Main.dc.html). */
+:root {
+  --page: #0B1733; --paper: #0B1733; --card: #10264A; --soft: #16305A;
+  --bd: #1E3760; --bd2: #3A5686;
+  --ink: #F4F1EA; --ink2: #DCE4F2; --mut: #A9B7D0; --strong: #F4F1EA;
+  --pri: #D9B66F; --onpri: #0B1733; --link: #F2D49A;
+  --gold: #E0B35A; --ok: #6EE0A8; --warn: #F2A06B; --err: #FF9C92; --errtx: #E8C4C0;
+  --dz: #0F2147; --dzi: #1B3A6B; --dzb: #3A5686;
+  --errbg: #2A1513; --erri: #4A2420; --errbd: #7A3A34;
+  /* turunan untuk chip dan grafik */
+  --ok-bg: rgba(110, 224, 168, .14); --warn-bg: rgba(242, 160, 107, .14); --err-bg: rgba(255, 156, 146, .14);
+  --gold-ch: #D9B66F; --royal: #5C86C4; --mist: #7C8DB0; --sage: #6EE0A8; --rose: #FF9C92;
+  --navy: #10264A; --navy2: #183E70; --ivory: #FBF8F2; --navy-mut: #C3CFE6;
+  --shadow: 0 18px 40px -22px rgba(0, 0, 0, .65);
+  --r-sm: 12px; --r-md: 20px; --r-lg: 28px; --r-pill: 999px;
+  --ease: cubic-bezier(.2, .7, .2, 1);
+  --font-sans: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-serif: Fraunces, Georgia, serif;
+  --font-login: "Cormorant Garamond", Georgia, serif;
+  color-scheme: dark;
+}
+
+:root[data-theme="light"] {
+  --page: #F6F2E9; --paper: #F6F2E9; --card: #FFFFFF; --soft: #E6ECF5;
+  --bd: #E2DDD0; --bd2: #C3CBDB;
+  --ink: #0B1733; --ink2: #1E2B4A; --mut: #4A5873; --strong: #10264A;
+  --pri: #10264A; --onpri: #FBF8F2; --link: #183E70;
+  --gold: #8A5A0B; --ok: #0A6B3B; --warn: #8A3B12; --err: #8F2A22; --errtx: #5A3A37;
+  --dz: #EEF2F9; --dzi: #DCE5F3; --dzb: #9FB2D0;
+  --errbg: #FCF1EF; --erri: #F6DAD6; --errbd: #D69A93;
+  --ok-bg: #DDF0E4; --warn-bg: #FBEBDD; --err-bg: #FCE3E0;
+  --gold-ch: #B7791F; --royal: #183E70; --mist: #9FB2D0; --sage: #0A6B3B; --rose: #8F2A22;
+  --shadow: 0 18px 40px -24px rgba(16, 38, 74, .45);
+  color-scheme: light;
+}

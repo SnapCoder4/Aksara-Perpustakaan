@@ -8,7 +8,7 @@ from sqlalchemy import inspect
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.middleware.sessions import SessionMiddleware
 
-from app import migrate, services
+from app import cache, migrate, services
 from app.paths import STATIC_DIR
 from app.auth import hash_password
 from app.core import Redirect, render
@@ -40,7 +40,26 @@ if not _secret:
 app.add_middleware(SessionMiddleware, secret_key=_secret, session_cookie="library_session",
                    same_site="lax", max_age=60 * 60 * 24 * 7)
 
-app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
+class CachedStatic(StaticFiles):
+    """File berversi (?v=...) di-cache setahun; selainnya satu jam."""
+    async def get_response(self, path, scope):
+        r = await super().get_response(path, scope)
+        if r.status_code == 200:
+            r.headers["Cache-Control"] = ("public, max-age=31536000, immutable" if b"v=" in scope.get("query_string", b"")
+                                          else "public, max-age=3600")
+        return r
+
+
+if not ON_VERCEL:  # di Vercel /static dilayani CDN dari public/static (lihat tools/sync_public.py)
+    app.mount("/static", CachedStatic(directory=str(STATIC_DIR)), name="static")
+
+
+@app.middleware("http")
+async def _invalidate_cache(request: Request, call_next):
+    response = await call_next(request)
+    if request.method not in ("GET", "HEAD", "OPTIONS") and request.url.path not in ("/login", "/logout"):
+        cache.clear()  # data bisa berubah: jangan tampilkan statistik/kategori lama
+    return response
 
 
 @app.get("/favicon.ico", include_in_schema=False)

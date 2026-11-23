@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% from "partials/book_card.html" import book_card, book_row %}
 {% block title %}Katalog buku{% endblock %}
-{% block css %}<link rel="stylesheet" href="/static/css/pages/public.css">{% endblock %}
+{% block css %}<link rel="stylesheet" href="{{ asset('css/pages/public.css') }}">{% endblock %}
 {% block content %}
 <div class="wrap">
   <header class="page-head">
@@ -57,4 +57,4 @@
   </nav>
 </div>
 {% endblock %}
-{% block js %}<script src="/static/js/search.js" defer></script>{% endblock %}
+{% block js %}<script src="{{ asset('js/search.js') }}" defer></script>{% endblock %}

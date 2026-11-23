@@ -1,11 +1,13 @@
 """Infrastruktur web bersama: template, session flash, dependency auth."""
+import hashlib
 from datetime import date
+from functools import lru_cache
 from urllib.parse import quote
 from fastapi import Request
 from fastapi.responses import HTMLResponse
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 from app.database import SessionLocal
-from app.paths import TEMPLATES_DIR
+from app.paths import STATIC_DIR, TEMPLATES_DIR
 
 BULAN = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"]
 
@@ -102,3 +104,16 @@ def _storage_globals():
 
 
 _storage_globals()
+
+
+@lru_cache(maxsize=None)
+def asset(path: str) -> str:
+    """URL /static/<path> dengan ?v=<hash isi file>: bisa di-cache selamanya, otomatis berganti saat file berubah."""
+    try:
+        v = hashlib.md5((STATIC_DIR / path).read_bytes()).hexdigest()[:8]
+    except OSError:
+        return f"/static/{path}"
+    return f"/static/{path}?v={v}"
+
+
+env.globals["asset"] = asset

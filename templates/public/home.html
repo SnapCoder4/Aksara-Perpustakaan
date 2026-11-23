@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% from "partials/book_card.html" import cover, book_card %}
 {% block title %}Perpustakaan digital nasional{% endblock %}
-{% block css %}<link rel="stylesheet" href="/static/css/pages/public.css">{% endblock %}
+{% block css %}<link rel="stylesheet" href="{{ asset('css/pages/public.css') }}">{% endblock %}
 {% block content %}
 <section class="wrap hero">
   <div class="rv">
@@ -113,4 +113,4 @@
 </dialog>
 {% endif %}
 {% endblock %}
-{% block js %}{% if user and user.role == "admin" %}<script src="/static/js/hero-edit.js?v=1"></script>{% endif %}{% endblock %}
+{% block js %}{% if user and user.role == "admin" %}<script src="{{ asset('js/hero-edit.js') }}"></script>{% endif %}{% endblock %}

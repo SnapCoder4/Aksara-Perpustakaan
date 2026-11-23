@@ -16,4 +16,4 @@
 <div id="hasil" data-endpoint="/admin/buku">{% include "admin/_books_results.html" %}</div>
 <p class="sr-only" id="cari-status" aria-live="polite"></p>
 {% endblock %}
-{% block js %}<script src="/static/js/admin-search.js" defer></script>{% endblock %}
+{% block js %}<script src="{{ asset('js/admin-search.js') }}" defer></script>{% endblock %}

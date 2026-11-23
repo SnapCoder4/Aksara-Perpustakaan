@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {# Layout panel dengan sidebar. Anak template mengisi: title, content; variabel panel = "admin" | "member" #}
 {% from "partials/icons.html" import icon %}
-{% block css %}<link rel="stylesheet" href="/static/css/pages/shell.css">{% block css2 %}{% endblock %}{% endblock %}
+{% block css %}<link rel="stylesheet" href="{{ asset('css/pages/shell.css') }}">{% block css2 %}{% endblock %}{% endblock %}
 {% block shell %}
 <div class="shell">
   <aside class="sidebar" id="sidebar" aria-label="Menu {{ 'admin' if panel == 'admin' else 'anggota' }}">

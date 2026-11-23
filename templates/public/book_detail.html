@@ -2,7 +2,7 @@
 {% from "partials/book_card.html" import cover, book_card %}
 {% block title %}{{ book.judul }}{% endblock %}
 {% block description %}{{ (book.sinopsis or book.judul ~ " oleh " ~ book.penulis)[:150] }}{% endblock %}
-{% block css %}<link rel="stylesheet" href="/static/css/pages/public.css">{% endblock %}
+{% block css %}<link rel="stylesheet" href="{{ asset('css/pages/public.css') }}">{% endblock %}
 {% block content %}
 {% set av = availability(book) %}
 <div class="wrap">

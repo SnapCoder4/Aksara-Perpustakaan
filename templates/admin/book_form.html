@@ -2,7 +2,7 @@
 {% from "partials/fields.html" import field %}
 {% set panel = "admin" %}
 {% block title %}{{ "Edit buku" if book else "Tambah buku" }}{% endblock %}
-{% block css2 %}<link rel="stylesheet" href="/static/css/vendor/cropper.min.css?v=1"><link rel="stylesheet" href="/static/css/pages/crop.css?v=2">{% endblock %}
+{% block css2 %}<link rel="stylesheet" href="{{ asset('css/vendor/cropper.min.css') }}"><link rel="stylesheet" href="{{ asset('css/pages/crop.css') }}">{% endblock %}
 {% block content %}
 {% set has_cover = book and book.cover_path %}
 <div><span class="kicker">Koleksi</span><h1 class="page-title">{{ "Edit buku" if book else "Tambah buku" }}</h1></div>
@@ -92,4 +92,4 @@
   </div>
 </dialog>
 {% endblock %}
-{% block js %}<script src="/static/js/vendor/cropper.min.js?v=1"></script><script src="/static/js/upload.js?v=2"></script>{% endblock %}
+{% block js %}<script src="{{ asset('js/vendor/cropper.min.js') }}"></script><script src="{{ asset('js/upload.js') }}"></script>{% endblock %}

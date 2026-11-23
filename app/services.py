@@ -163,6 +163,28 @@ def monthly_activity(db: Session, months: int = 12) -> list[dict]:
     return out
 
 
+def home_stats(db: Session) -> list[tuple[int, str]]:
+    """Empat hitungan beranda dalam SATU query."""
+    from sqlalchemy import select
+    sc = lambda m, *w: select(func.count()).select_from(m).where(*w).scalar_subquery()
+    a, b, c, d = db.execute(select(sc(Book), sc(Member, Member.status == "Aktif"), sc(Category), sc(Borrowing))).one()
+    return [(a, "Judul koleksi"), (b, "Anggota aktif"), (c, "Kategori"), (d, "Total peminjaman")]
+
+
+def home_categories(db: Session) -> list[tuple]:
+    """(kategori, jumlah buku) sebagai objek sederhana, aman disimpan di cache."""
+    from types import SimpleNamespace
+    rows = (db.query(Category.id, Category.nama, func.count(Book.kode_buku))
+              .outerjoin(Book, Book.category_id == Category.id)
+              .group_by(Category.id).order_by(Category.nama).all())
+    return [(SimpleNamespace(id=i, nama=nm), n) for i, nm, n in rows]
+
+
+def category_list(db: Session) -> list:
+    from types import SimpleNamespace
+    return [SimpleNamespace(id=i, nama=n) for i, n in db.query(Category.id, Category.nama).order_by(Category.nama).all()]
+
+
 def popular_books(db: Session, limit: int = 5) -> list[tuple[Book, int]]:
     rows = (db.query(Book, func.count(Borrowing.id).label("n"))
               .outerjoin(Borrowing, Borrowing.kode_buku == Book.kode_buku)

@@ -5,7 +5,7 @@ from sqlalchemy import func, or_
 from sqlalchemy.orm import Session
 from app.core import flash, get_db, render, require_member, safe_next
 from app.models import Book, Borrowing, Category, Member, Wishlist
-from app import services
+from app import cache, services
 from app.hero import hero_images, rembg_available
 
 router = APIRouter()
@@ -15,16 +15,9 @@ PER_PAGE = 12
 @router.get("/")
 def home(request: Request, db: Session = Depends(get_db)):
     popular = services.popular_books(db, 5)
-    cats = (db.query(Category, func.count(Book.kode_buku))
-              .outerjoin(Book, Book.category_id == Category.id)
-              .group_by(Category.id).order_by(Category.nama).all())
+    cats = cache.cached("home_cats", lambda: services.home_categories(db))
     latest = db.query(Book).order_by(Book.dibuat.desc().nulls_last(), Book.kode_buku.desc()).limit(4).all()
-    stats = [
-        (db.query(Book).count(), "Judul koleksi"),
-        (db.query(Member).filter(Member.status == "Aktif").count(), "Anggota aktif"),
-        (db.query(Category).count(), "Kategori"),
-        (db.query(Borrowing).count(), "Total peminjaman"),
-    ]
+    stats = cache.cached("home_stats", lambda: services.home_stats(db))
     return render(request, "public/home.html", popular=[b for b, _ in popular], cats=cats,
                   latest=latest, stats=stats, hero=hero_images(db), rembg_ok=rembg_available())
 
@@ -38,7 +31,7 @@ def catalog(request: Request, q: str = "", kategori: int | None = None, urut: st
             tersedia: int = 0, tampilan: str = "grid", page: int = 1, db: Session = Depends(get_db)):
     q, urut, page = q.strip()[:80], _urut(urut), max(1, page)
     books, has_next = services.search_books(db, q, kategori, urut, bool(tersedia), page, PER_PAGE)
-    cats = db.query(Category).order_by(Category.nama).all()
+    cats = cache.cached("cat_list", lambda: services.category_list(db))
     return render(request, "public/catalog.html", books=books, cats=cats, q=q, kategori=kategori,
                   urut=urut, tersedia=tersedia, tampilan="list" if tampilan == "list" else "grid",
                   page=page, has_next=has_next)

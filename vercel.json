@@ -1,8 +1,20 @@
 {
+  "regions": ["sin1"],
   "functions": {
     "index.py": {
       "includeFiles": "{templates/**,static/**}",
       "excludeFiles": "{_old/**,aksara-design/**,tools/**,node_modules/**,venv/**,.venv/**,env_baru/**,.git/**,*.db,*.db.bak,*.dump,.env*,README.md}"
     }
-  }
+  },
+  "headers": [
+    {
+      "source": "/static/(.*)",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=3600" }]
+    },
+    {
+      "source": "/static/(.*)",
+      "has": [{ "type": "query", "key": "v" }],
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
+    }
+  ]
 }
