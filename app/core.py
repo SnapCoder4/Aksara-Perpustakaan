@@ -91,3 +91,13 @@ def url_with(request: Request, **kw) -> str:
 
 
 env.globals["url_with"] = url_with
+
+
+def _storage_globals():
+    from app import hero, storage  # impor di sini: hindari impor melingkar
+    env.globals["cover_url"] = lambda ref: storage.url("covers", ref)
+    env.globals["cloud_mode"] = storage.enabled
+    env.globals["hero_max_mb"] = lambda: hero.max_bytes() // (1024 * 1024)
+
+
+_storage_globals()

@@ -253,9 +253,9 @@ def book_delete(request: Request, kode: str, db: Session = Depends(get_db)):
 
 # ---------- Gambar hero beranda ----------
 @router.get("/hero")
-def hero_page(request: Request):
+def hero_page(request: Request, db: Session = Depends(get_db)):
     guard(request)
-    return render(request, "admin/hero.html", slots=list(zip(hero.SLOTS, hero.hero_images())), rembg_ok=hero.rembg_available(), active_menu="hero")
+    return render(request, "admin/hero.html", slots=list(zip(hero.SLOTS, hero.hero_images(db))), rembg_ok=hero.rembg_available(), active_menu="hero")
 
 
 def _wants_json(request: Request) -> bool:
@@ -290,7 +290,7 @@ async def hero_preview(request: Request):
 
 
 @router.post("/hero/{n}")
-async def hero_save(request: Request, n: int):
+async def hero_save(request: Request, n: int, db: Session = Depends(get_db)):
     api = _wants_json(request)
     if api and (denied := _hero_api_denied(request)):
         return denied
@@ -303,13 +303,13 @@ async def hero_save(request: Request, n: int):
         err = "Pilih gambar terlebih dahulu."
     else:
         try:
-            note = await hero.save_hero(n, f, form.get("hapus_latar") == "1")
+            note = await hero.save_hero(n, f, form.get("hapus_latar") == "1", db)
         except ValueError as ex:
             err = str(ex)
     if api:
         if err:
             return JSONResponse({"ok": False, "error": err}, 422)
-        return {"ok": True, "url": hero.hero_images()[n - 1], "note": note}
+        return {"ok": True, "url": hero.hero_images(db)[n - 1], "note": note}
     if err:
         flash(request, err, "err")
     elif note:
@@ -320,13 +320,13 @@ async def hero_save(request: Request, n: int):
 
 
 @router.post("/hero/{n}/hapus")
-def hero_delete(request: Request, n: int):
+def hero_delete(request: Request, n: int, db: Session = Depends(get_db)):
     api = _wants_json(request)
     if api and (denied := _hero_api_denied(request)):
         return denied
     if not api:
         guard(request)
-    hero.delete_hero(n)
+    hero.delete_hero(n, db)
     if api:
         return {"ok": True, "url": None}
     flash(request, f"Gambar hero {n} dihapus; beranda memakai sampul gradasi.")

@@ -26,7 +26,7 @@ def home(request: Request, db: Session = Depends(get_db)):
         (db.query(Borrowing).count(), "Total peminjaman"),
     ]
     return render(request, "public/home.html", popular=[b for b, _ in popular], cats=cats,
-                  latest=latest, stats=stats, hero=hero_images(), rembg_ok=rembg_available())
+                  latest=latest, stats=stats, hero=hero_images(db), rembg_ok=rembg_available())
 
 
 def _urut(urut):

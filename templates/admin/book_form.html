@@ -27,7 +27,7 @@
         </div>
         <div class="dz-state dz-uploading"><span class="dz-title">Mengunggah...</span><div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="100"><i></i></div></div>
         <div class="dz-state dz-preview">
-          <div class="cover cv-0"><img src="{{ '/static/uploads/covers/' ~ book.cover_path if has_cover else '' }}" alt="Pratinjau sampul {{ book.judul if book else 'buku' }}"></div>
+          <div class="cover cv-0"><img src="{{ cover_url(book.cover_path) if has_cover else '' }}" alt="Pratinjau sampul {{ book.judul if book else 'buku' }}"></div>
           <div class="row gap-8 wrap-flex" style="justify-content:center">
             <button type="button" class="btn btn-ghost btn-sm" data-dz-replace>Ganti foto</button>
             <button type="button" class="btn btn-ghost btn-sm" data-dz-remove>Hapus</button>

@@ -12,7 +12,7 @@
 {% block content %}
 <div><span class="kicker">Tampilan</span><h1 class="page-title">Gambar hero</h1></div>
 <p class="muted" style="max-width:640px">Tiga gambar hiasan di beranda. Terpisah dari sampul buku: tidak mengubah foto sampul mana pun. Slot kosong memakai sampul gradasi. <a href="/" target="_blank" rel="noopener">Lihat beranda</a></p>
-{% if not rembg_ok %}<p class="card" role="note" style="max-width:640px;margin-top:12px">Fitur hapus latar belum aktif karena rembg belum terpasang. Gambar tetap bisa diunggah dan disimpan apa adanya. Untuk mengaktifkannya jalankan <code>pip install -r requirements-optional.txt</code> lalu restart server.</p>{% endif %}
+{% if not rembg_ok %}<p class="card" role="note" style="max-width:640px;margin-top:12px">{% if cloud_mode() %}Hapus latar hanya tersedia di versi lokal. Gambar tetap bisa diunggah dan disimpan apa adanya.{% else %}Fitur hapus latar belum aktif karena rembg belum terpasang. Gambar tetap bisa diunggah dan disimpan apa adanya. Untuk mengaktifkannya jalankan <code>pip install -r requirements-optional.txt</code> lalu restart server.{% endif %}</p>{% endif %}
 <div class="hero-slots">
   {% for n, src in slots %}
   <section class="card hero-slot" aria-labelledby="hs-{{ n }}">
@@ -23,7 +23,7 @@
         <input class="input" id="g-{{ n }}" type="file" name="gambar" accept="image/jpeg,image/png,image/webp" required style="padding-top:10px"></div>
       <label class="check"><input type="checkbox" name="hapus_latar" value="1" {{ "checked" if rembg_ok else "disabled" }}> Hapus latar belakang{{ "" if rembg_ok else " (tidak tersedia)" }}</label>
       <button class="btn btn-sm" type="submit" data-loading-btn><span class="spin"></span>Simpan dan terapkan</button>
-      <span class="hint muted" style="font-size:12px">JPG, PNG, atau WEBP, maksimal 8 MB. Menghapus latar butuh beberapa detik.</span>
+      <span class="hint muted" style="font-size:12px">JPG, PNG, atau WEBP, maksimal {{ hero_max_mb() }} MB. Menghapus latar butuh beberapa detik.</span>
     </form>
     {% if src %}
     <form method="post" action="/admin/hero/{{ n }}/hapus" data-confirm="Hapus gambar hero {{ n }}?"><button class="btn btn-danger btn-sm" type="submit">Hapus gambar</button></form>

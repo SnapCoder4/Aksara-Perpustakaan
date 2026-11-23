@@ -2,7 +2,7 @@
 {% macro cover(b, size="", tag=true) -%}
 <div class="cover cv-{{ b.judul|length % 6 }} {{ size }}">
   {%- if b.cover_path -%}
-    <img src="/static/uploads/covers/{{ b.cover_path }}" alt="Sampul {{ b.judul }}" loading="lazy">
+    <img src="{{ cover_url(b.cover_path) }}" alt="Sampul {{ b.judul }}" loading="lazy">
   {%- else -%}
     <span class="ct">{{ b.category.nama if b.category else "Buku" }}</span>
     <span class="cn">{{ b.judul }}</span>

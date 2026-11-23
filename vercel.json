@@ -1,0 +1,7 @@
+{
+  "functions": {
+    "index.py": {
+      "excludeFiles": "{_old/**,aksara-design/**,tools/**,node_modules/**,venv/**,.venv/**,env_baru/**,.git/**,*.db,*.db.bak,*.dump,.env*,README.md}"
+    }
+  }
+}

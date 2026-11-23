@@ -20,7 +20,7 @@
     const c = el("div", `cover cv-${b.cv} ${size || ""}`.trim());
     if (b.cover) {
       const img = el("img");
-      img.src = "/static/uploads/covers/" + encodeURIComponent(b.cover);
+      img.src = /^https?:\/\//.test(b.cover) ? b.cover : "/static/uploads/covers/" + encodeURIComponent(b.cover);
       img.alt = "Sampul " + b.judul;
       img.loading = "lazy";
       c.append(img);

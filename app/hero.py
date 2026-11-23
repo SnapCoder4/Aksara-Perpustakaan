@@ -1,14 +1,19 @@
 """Gambar hiasan hero beranda: static/img/hero/hero-1..3.webp. Terpisah dari sampul buku (static/uploads/covers)."""
-import os
 from io import BytesIO
 from pathlib import Path
 from fastapi import UploadFile
 from fastapi.concurrency import run_in_threadpool
 from PIL import Image, ImageOps
+from app import storage
 
 HERO_DIR = Path("static/img/hero")
 SLOTS = (1, 2, 3)
 MAX_BYTES = 8 * 1024 * 1024
+CLOUD_MAX_BYTES = 4 * 1024 * 1024  # Vercel menolak body request di atas 4,5 MB (413), sisakan ruang untuk multipart
+
+
+def max_bytes() -> int:
+    return CLOUD_MAX_BYTES if storage.enabled() else MAX_BYTES
 MAX_SIDE = 900
 ALLOWED_EXT = {".jpg", ".jpeg", ".png", ".webp"}
 ALLOWED_TYPES = {"image/jpeg", "image/png", "image/webp"}
@@ -21,15 +26,35 @@ def path(n: int) -> Path:
     return HERO_DIR / f"hero-{n}.webp"
 
 
-def hero_images() -> list[str | None]:
-    """URL tiap slot (dengan ?v=mtime agar cache browser ikut berganti), None bila file belum ada."""
+def _cloud_version(db, n: int):
+    from app.models import Setting
+    row = db.get(Setting, f"hero_{n}")
+    return int(row.value) if row and row.value.isdigit() else None
+
+
+def hero_images(db=None) -> list[str | None]:
+    """URL tiap slot, None bila belum ada gambar. Lokal: cek file (?v=mtime). Cloud: versi gambar disimpan di tabel settings."""
+    if storage.enabled():
+        cloud = storage._cld().config().cloud_name
+        out = []
+        for n in SLOTS:
+            v = _cloud_version(db, n) if db is not None else None
+            out.append(f"https://res.cloudinary.com/{cloud}/image/upload/v{v}/{storage.PREFIX}/hero/hero-{n}.webp" if v else None)
+        return out
     return [f"/static/img/hero/hero-{n}.webp?v={int(path(n).stat().st_mtime)}" if path(n).is_file() else None for n in SLOTS]
 
 
 NO_REMBG = "rembg belum terpasang, jadi gambar disimpan apa adanya tanpa hapus latar. Untuk mengaktifkannya: pip install -r requirements-optional.txt"
+NO_REMBG_CLOUD = "Hapus latar hanya tersedia di versi lokal. Gambar disimpan apa adanya."
+
+
+def no_rembg_msg() -> str:
+    return NO_REMBG_CLOUD if storage.enabled() else NO_REMBG
 
 
 def rembg_available() -> bool:
+    if storage.enabled():
+        return False  # mode cloud (Vercel): model berat tidak dipasang
     from importlib.util import find_spec  # cek tanpa mengimpor paket berat
     return find_spec("rembg") is not None
 
@@ -53,8 +78,8 @@ async def _read_upload(file: UploadFile) -> bytes:
     data = bytearray()
     while chunk := await file.read(64 * 1024):
         data += chunk
-        if len(data) > MAX_BYTES:
-            raise ValueError("Ukuran file maksimal 8 MB.")
+        if len(data) > max_bytes():
+            raise ValueError(f"Ukuran file maksimal {max_bytes() // (1024 * 1024)} MB.")
     if not data:
         raise ValueError("File kosong.")
     return bytes(data)
@@ -74,7 +99,7 @@ def _render(data: bytes, remove_bg: bool) -> Image.Image:
     return _remove_bg(img) if remove_bg else img
 
 
-async def save_hero(n: int, file: UploadFile, remove_bg: bool) -> str | None:
+async def save_hero(n: int, file: UploadFile, remove_bg: bool, db=None) -> str | None:
     """Validasi penuh di server, opsional hapus latar, simpan sebagai hero-N.webp. ValueError bila ditolak.
     Mengembalikan catatan (str) bila hapus latar diminta tetapi rembg tidak terpasang; gambar tetap disimpan apa adanya."""
     if n not in SLOTS:
@@ -82,12 +107,18 @@ async def save_hero(n: int, file: UploadFile, remove_bg: bool) -> str | None:
     data = await _read_upload(file)
     note = None
     if remove_bg and not rembg_available():
-        remove_bg, note = False, NO_REMBG
+        remove_bg, note = False, no_rembg_msg()
     img = await run_in_threadpool(_render, data, remove_bg)  # rembg berat: jangan blok event loop
-    HERO_DIR.mkdir(parents=True, exist_ok=True)
-    tmp = HERO_DIR / f".tmp-{n}.webp"
-    img.save(tmp, "WEBP", quality=90)
-    os.replace(tmp, path(n))  # atomik: beranda tidak pernah melihat file setengah jadi
+    buf = BytesIO()
+    img.save(buf, "WEBP", quality=90)
+    try:
+        ref = await run_in_threadpool(storage.put, "hero", f"hero-{n}.webp", buf.getvalue(), True)
+    except Exception:
+        raise ValueError("Gagal menyimpan gambar. Coba lagi sebentar lagi.")
+    if storage.enabled() and db is not None:
+        from app.services import set_setting
+        set_setting(db, f"hero_{n}", int(ref.split("/upload/v", 1)[1].split("/", 1)[0]))
+        db.commit()
     return note
 
 
@@ -95,13 +126,22 @@ async def preview_hero(file: UploadFile) -> bytes:
     """Hasil hapus latar sebagai PNG, tanpa menyimpan apa pun (untuk pratinjau sebelum/sesudah di editor)."""
     data = await _read_upload(file)
     if not rembg_available():
-        raise ValueError(NO_REMBG)
+        raise ValueError(no_rembg_msg())
     img = await run_in_threadpool(_render, data, True)
     buf = BytesIO()
     img.save(buf, "PNG")
     return buf.getvalue()
 
 
-def delete_hero(n: int):
-    if n in SLOTS:
-        path(n).unlink(missing_ok=True)
+def delete_hero(n: int, db=None):
+    if n not in SLOTS:
+        return
+    if storage.enabled():
+        if db is not None:
+            from app.models import Setting
+            if (row := db.get(Setting, f"hero_{n}")):
+                db.delete(row)
+                db.commit()
+        storage.remove("hero", f"https://res.cloudinary.com/{storage._cld().config().cloud_name}/image/upload/{storage.PREFIX}/hero/hero-{n}.webp")
+    else:
+        storage.remove("hero", f"hero-{n}.webp")

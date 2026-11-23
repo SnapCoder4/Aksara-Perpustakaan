@@ -1,13 +1,12 @@
 """Upload sampul buku. Semua validasi dilakukan di server."""
-import re
-from time import sleep
 from io import BytesIO
 from pathlib import Path
 from uuid import uuid4
 from fastapi import UploadFile
+from fastapi.concurrency import run_in_threadpool
 from PIL import Image, ImageOps
+from app import storage
 
-COVER_DIR = Path("static/uploads/covers")
 MAX_BYTES = 2 * 1024 * 1024
 MAX_WIDTH = 600
 ALLOWED_TYPES = {"image/jpeg", "image/png", "image/webp"}
@@ -15,7 +14,6 @@ ALLOWED_EXT = {".jpg", ".jpeg", ".png", ".webp"}
 ALLOWED_FORMATS = {"JPEG", "PNG", "WEBP"}
 MAX_W, MAX_H, MIN_W = 1200, 1800, 200  # hasil crop dari browser 600x900; lebih dari ini tidak wajar
 RATIO, RATIO_TOL = 2 / 3, 0.02
-_NAME = re.compile(r"^[0-9a-f]{32}\.webp$")
 
 Image.MAX_IMAGE_PIXELS = 25_000_000  # tolak gambar raksasa (decompression bomb)
 
@@ -59,20 +57,14 @@ async def save_cover(file: UploadFile) -> str:
         raise ValueError(str(ex))
     except Exception:
         raise ValueError("File bukan gambar yang valid atau rusak.")
-    COVER_DIR.mkdir(parents=True, exist_ok=True)
-    name = uuid4().hex + ".webp"
-    img.save(COVER_DIR / name, "WEBP", quality=85)
-    return name
+    buf = BytesIO()
+    img.save(buf, "WEBP", quality=85)
+    try:
+        return await run_in_threadpool(storage.put, "covers", uuid4().hex + ".webp", buf.getvalue())
+    except Exception:
+        raise ValueError("Gagal menyimpan gambar. Coba lagi sebentar lagi.")
 
 
 def delete_cover(name: str | None):
-    """Hapus hanya file bernama buatan sendiri di folder covers."""
-    if not (name and _NAME.match(name)):
-        return
-    for _ in range(10):  # Windows: file bisa masih terbuka sesaat oleh proses lain
-        try:
-            (COVER_DIR / name).unlink(missing_ok=True)
-            return
-        except PermissionError:
-            sleep(0.2)
-    # shortcut: gagal hapus setelah ~2 dtk dibiarkan (file yatim), jangan gagalkan request; upgrade: job pembersih berkala
+    """Hapus sampul (nama file lokal atau URL cloud). Nama yang bukan buatan sendiri diabaikan."""
+    storage.remove("covers", name)

@@ -8,3 +8,4 @@ itsdangerous
 python-dotenv
 Pillow
 psycopg[binary]
+cloudinary

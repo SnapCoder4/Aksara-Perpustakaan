@@ -22,7 +22,7 @@
     {% endif %}
   </div>
   {% set is_admin = user and user.role == "admin" %}
-  <div class="hero-stage"{% if is_admin %} data-hero-admin data-rembg="{{ 1 if rembg_ok else 0 }}"{% else %} aria-hidden="true"{% endif %}>
+  <div class="hero-stage"{% if is_admin %} data-hero-admin data-rembg="{{ 1 if rembg_ok else 0 }}" data-max-mb="{{ hero_max_mb() }}"{% else %} aria-hidden="true"{% endif %}>
     {% for src in hero %}
       <div class="hero-book h{{ loop.index }}c{% if is_admin %} hero-edit{% endif %}" data-slot="{{ loop.index }}"{% if is_admin %} data-has="{{ 1 if src else 0 }}" role="button" tabindex="0" aria-label="Ubah gambar hero {{ loop.index }}"{% else %} aria-hidden="true"{% endif %}>
         {% if src %}<img src="{{ src }}" alt="" width="210" height="315" loading="eager" decoding="async"{% if loop.first %} fetchpriority="high"{% endif %}>
@@ -96,7 +96,7 @@
       <input type="file" id="hm-file" accept="image/jpeg,image/png,image/webp" hidden aria-label="Pilih foto hero">
     </div>
     <label class="check"><input type="checkbox" id="hm-rembg" checked> Hapus latar belakang (rembg)</label>
-    <p class="muted hm-note" id="hm-rembg-note" hidden>rembg belum terpasang di server, jadi foto akan disimpan apa adanya. Untuk mengaktifkannya: <code>pip install -r requirements-optional.txt</code>, lalu restart server.</p>
+    <p class="muted hm-note" id="hm-rembg-note" hidden>{% if cloud_mode() %}Hapus latar hanya tersedia di versi lokal. Foto akan disimpan apa adanya.{% else %}rembg belum terpasang di server, jadi foto akan disimpan apa adanya. Untuk mengaktifkannya: <code>pip install -r requirements-optional.txt</code>, lalu restart server.{% endif %}</p>
     <div class="hm-compare">
       <figure><div class="hm-panel" id="hm-before"><span class="muted">Pilih foto</span></div><figcaption>Sebelum</figcaption></figure>
       <figure><div class="hm-panel" id="hm-after"></div><figcaption>Sesudah (seperti di hero)</figcaption></figure>

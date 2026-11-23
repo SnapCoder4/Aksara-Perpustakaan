@@ -17,18 +17,22 @@ from app.routers import account, admin, public
 
 # Database baru (belum ada tabel) dibuat langsung. Database lama yang skemanya
 # belum diperbarui TIDAK diubah otomatis: jalankan `python -m app.migrate`.
-_tables = inspect(engine).get_table_names()
-if "books" not in _tables:
-    migrate.run()
-elif ("cover_path" not in {c["name"] for c in inspect(engine).get_columns("books")}
-      or "role" not in {c["name"] for c in inspect(engine).get_columns("librarians")}):
-    raise RuntimeError("Skema database belum dimigrasi. Backup library.db lalu jalankan: python -m app.migrate")
+ON_VERCEL = bool(os.getenv("VERCEL"))  # serverless: tidak ada migrasi/seed otomatis tiap cold start
+if not ON_VERCEL:
+    _tables = inspect(engine).get_table_names()
+    if "books" not in _tables:
+        migrate.run()
+    elif ("cover_path" not in {c["name"] for c in inspect(engine).get_columns("books")}
+          or "role" not in {c["name"] for c in inspect(engine).get_columns("librarians")}):
+        raise RuntimeError("Skema database belum dimigrasi. Backup library.db lalu jalankan: python -m app.migrate")
 
 mimetypes.add_type("image/webp", ".webp")  # registri Windows bisa tidak mengenal webp
 
 app = FastAPI(title="Aksara")
 
 _secret = os.getenv("SESSION_SECRET")
+if not _secret and ON_VERCEL:
+    raise RuntimeError("SESSION_SECRET wajib diisi di Vercel (kunci acak per instance membuat login tidak stabil).")
 if not _secret:
     print("PERINGATAN: SESSION_SECRET belum diset di .env; memakai kunci acak sementara (login hilang saat server restart).")
     _secret = secrets.token_hex(32)
@@ -58,7 +62,8 @@ def seed_data():
     db.close()
 
 
-seed_data()
+if not ON_VERCEL:
+    seed_data()
 
 
 @app.exception_handler(Redirect)

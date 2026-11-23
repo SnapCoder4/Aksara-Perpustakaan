@@ -5,7 +5,7 @@
   var dlg = document.getElementById("hero-modal");
   if (!stage || !dlg) return;
   var HDR = { "X-Requested-With": "fetch" };
-  var MAX = 8 * 1048576, TYPES = ["image/jpeg", "image/png", "image/webp"];
+  var MAXMB = Number(stage.getAttribute("data-max-mb")) || 8, MAX = MAXMB * 1048576, TYPES = ["image/jpeg", "image/png", "image/webp"];
   var rembgOk = stage.getAttribute("data-rembg") === "1";
   var $ = function (id) { return document.getElementById(id); };
   var el = { slot: $("hm-slot"), drop: $("hm-drop"), pick: $("hm-pick"), file: $("hm-file"), rembg: $("hm-rembg"), note: $("hm-rembg-note"),
@@ -71,7 +71,7 @@
     setErr("");
     if (!f) return;
     if (TYPES.indexOf(f.type) === -1) return setErr("File bukan gambar yang didukung. Gunakan JPG, PNG, atau WEBP.");
-    if (f.size > MAX) return setErr("Ukuran file maksimal 8 MB.");
+    if (f.size > MAX) return setErr("Ukuran file maksimal " + MAXMB + " MB.");
     if (ctrl) ctrl.abort();
     revoke(); orig = f; processed = null; failed = false;
     showImg(el.before, blobUrl(f), "Foto asli");
