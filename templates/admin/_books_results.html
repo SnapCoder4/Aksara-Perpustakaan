@@ -1,0 +1,22 @@
+{% from "partials/book_card.html" import cover %}
+{% from "partials/pagination.html" import pagination %}
+<div class="card">
+  <div class="table-wrap"><table class="table">
+    <thead><tr><th>Buku</th><th>Penulis</th><th>Kategori</th><th class="num">Stok</th><th><span class="sr-only">Aksi</span></th></tr></thead>
+    <tbody>
+    {% for b in books %}
+      <tr>
+        <td><div class="row gap-12">{{ cover(b, "xs") }}<span class="stack"><b>{{ b.judul }}</b><span class="hint">{{ b.kode_buku }}{% if b.isbn %} · {{ b.isbn }}{% endif %}</span></span></div></td>
+        <td>{{ b.penulis }}</td>
+        <td>{{ b.category.nama if b.category else "-" }}</td>
+        <td class="num"><span class="chip {{ 'chip-ok' if b.stok > 0 else 'chip-warn' }}">{{ b.stok }}</span></td>
+        <td><div class="actions">
+          <a class="btn btn-ghost btn-sm" href="/admin/buku/{{ b.kode_buku }}/edit">Edit</a>
+          <form method="post" action="/admin/buku/{{ b.kode_buku }}/hapus" data-confirm="Hapus buku &quot;{{ b.judul }}&quot;? Foto sampulnya ikut terhapus."><button class="btn btn-danger btn-sm" type="submit">Hapus</button></form>
+        </div></td>
+      </tr>
+    {% else %}<tr><td colspan="5"><div class="empty"><span class="serif">{% if q %}Tidak ada buku yang cocok dengan '{{ q }}'{% else %}Tidak ada buku.{% endif %}</span></div></td></tr>{% endfor %}
+    </tbody>
+  </table></div>
+  <div class="row between wrap-flex gap-12" style="margin-top:16px"><span class="hint">{{ total }} buku</span>{{ pagination(request, page, pages) }}</div>
+</div>

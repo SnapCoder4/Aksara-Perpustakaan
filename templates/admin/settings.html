@@ -1,0 +1,27 @@
+{% extends "app_shell.html" %}
+{% set panel = "admin" %}
+{% block title %}Pengaturan{% endblock %}
+{% block content %}
+<div><span class="kicker">Sistem</span><h1 class="page-title">Pengaturan</h1></div>
+<div class="settings-grid">
+  <form method="post" action="/admin/pengaturan" class="card stack gap-16">
+    <h2>Aturan peminjaman</h2>
+    <div class="field"><label for="loan_days">Masa pinjam (hari)</label><input class="input" type="number" id="loan_days" name="loan_days" min="1" max="90" value="{{ settings.loan_days }}" required></div>
+    <div class="field"><label for="fine_per_day">Denda per hari (Rp)</label><input class="input" type="number" id="fine_per_day" name="fine_per_day" min="0" max="1000000" value="{{ settings.fine_per_day }}" required></div>
+    <div class="field"><label for="max_loans">Maksimal pinjaman aktif per anggota</label><input class="input" type="number" id="max_loans" name="max_loans" min="1" max="50" value="{{ settings.max_loans }}" required></div>
+    <button class="btn" type="submit" style="align-self:flex-start">Simpan pengaturan</button>
+  </form>
+
+  <section class="card stack gap-16">
+    <h2>Petugas</h2>
+    <div>{% for s in staff %}<div class="list-item"><span class="info"><b>{{ s.full_name }}</b><span>{{ s.username }}</span></span></div>{% endfor %}</div>
+    <form method="post" action="/admin/pengaturan/petugas" class="stack gap-12">
+      <h3 class="h3" style="font-size:18px">Tambah petugas</h3>
+      <div class="field"><label for="full_name">Nama lengkap</label><input class="input" id="full_name" name="full_name" required maxlength="100"></div>
+      <div class="field"><label for="username">Username</label><input class="input" id="username" name="username" required maxlength="50" autocomplete="off"></div>
+      <div class="field"><label for="password">Kata sandi</label><input class="input" type="password" id="password" name="password" required maxlength="72" autocomplete="new-password"><span class="hint">Minimal 8 karakter.</span></div>
+      <button class="btn btn-ghost" type="submit" style="align-self:flex-start">Tambah petugas</button>
+    </form>
+  </section>
+</div>
+{% endblock %}

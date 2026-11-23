@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Login premium (desktop)</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:Inter,system-ui,sans-serif;background:#0B1733}
+a{color:#F2D49A;text-decoration:none}a:hover{color:#FFE7B8}
+button{font-family:inherit;cursor:pointer}
+input{font-family:inherit}
+input:focus-visible,button:focus-visible,a:focus-visible{outline:3px solid #F2D49A;outline-offset:2px}
+@keyframes rise{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-14px) rotate(2deg)}}
+@keyframes drift{from{transform:translateY(0);opacity:0}15%{opacity:.9}to{transform:translateY(-220px);opacity:0}}
+@keyframes sheen{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes toastin{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.rise{animation:rise .9s cubic-bezier(.2,.7,.2,1) both}
+.bob{animation:bob 7s ease-in-out infinite}
+.dr{animation:drift 9s linear infinite}
+.bg{background:linear-gradient(120deg,#0B1733,#10264A,#0B1733);background-size:200% 200%;animation:sheen 24s ease-in-out infinite}
+.sp{animation:spin .8s linear infinite}
+.toast{animation:toastin .35s ease both}
+.shk{animation:shake .35s ease}
+.btn{transition:transform .2s ease,box-shadow .2s ease,background .2s}
+.btn:hover{transform:translateY(-2px);box-shadow:0 18px 30px -14px rgba(217,182,111,.55)}
+.fld{transition:border-color .2s,box-shadow .2s,background .2s}
+.fld:focus-within{border-color:#F2D49A;box-shadow:0 0 0 4px rgba(242,212,154,.18);background:rgba(255,255,255,.09)}
+.pill{transition:transform .35s cubic-bezier(.2,.7,.2,1)}
+.lay{transition:transform .25s ease-out}
+@media (prefers-reduced-motion:reduce){.rise,.bob,.dr,.bg,.sp,.toast,.shk,.btn,.fld,.pill,.lay{animation:none;transition:none}}
+</style>
+</helmet>
+<div class="bg" style="position:relative;overflow:hidden;width:100%;display:flex;flex-direction:row;min-height:900px;color:#F4F1EA">
+
+<!-- Adegan sinematik -->
+<section onMouseMove="{{move}}" style="{{heroBox}}">
+<div aria-hidden="true" class="lay" style="{{lSky}}"></div>
+<div aria-hidden="true" class="lay" style="{{lStars}}"><sc-for list="{{stars}}" as="s" hint-placeholder-count="30"><span style="{{s.style}}"></span></sc-for></div>
+<div aria-hidden="true" style="position:absolute;left:0;right:0;bottom:0;height:70%;background:radial-gradient(ellipse at 45% 100%,rgba(217,182,111,.55),rgba(217,182,111,0) 62%)"></div>
+<div aria-hidden="true" class="lay" style="{{lBuild}}">
+<svg viewBox="0 0 800 420" preserveAspectRatio="xMidYMax slice" width="100%" height="100%" style="display:block">
+<defs><linearGradient id="gb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1B3358"/><stop offset="1" stop-color="#0B1733"/></linearGradient><linearGradient id="gw" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F2D49A" stop-opacity=".95"/><stop offset="1" stop-color="#D9B66F" stop-opacity=".55"/></linearGradient></defs>
+<path d="M0 420V330h120V300h60v30h40V260h70V210h110V160h60V210h110V260h70v70h50V300h60v30h110v90z" fill="url(#gb)"/>
+<rect x="250" y="210" width="300" height="12" fill="#2A4A7A"/>
+<g fill="url(#gw)"><rect x="262" y="236" width="14" height="70"/><rect x="288" y="236" width="14" height="70"/><rect x="314" y="236" width="14" height="70"/><rect x="340" y="236" width="14" height="70"/><rect x="366" y="236" width="14" height="70"/><rect x="392" y="236" width="14" height="70"/><rect x="418" y="236" width="14" height="70"/><rect x="444" y="236" width="14" height="70"/><rect x="470" y="236" width="14" height="70"/><rect x="496" y="236" width="14" height="70"/><rect x="522" y="236" width="14" height="70"/><rect x="372" y="178" width="14" height="24"/><rect x="400" y="178" width="14" height="24"/><rect x="428" y="178" width="14" height="24"/></g>
+<rect x="0" y="360" width="800" height="60" fill="#0B1733" opacity=".75"/>
+</svg>
+</div>
+<div aria-hidden="true" class="lay" style="{{lParts}}"><sc-for list="{{parts}}" as="p" hint-placeholder-count="14"><span class="dr" style="{{p.style}}"></span></sc-for></div>
+<div aria-hidden="true" class="lay" style="{{lBook}}"><div class="bob">
+<svg viewBox="0 0 220 140" width="170" style="display:block;filter:drop-shadow(0 0 28px rgba(242,212,154,.55))">
+<path d="M110 30C84 14 44 12 14 24V118C44 106 84 108 110 124Z" fill="#F4E7C8"/>
+<path d="M110 30C136 14 176 12 206 24V118C176 106 136 108 110 124Z" fill="#E9D5A6"/>
+<path d="M110 30V124" stroke="#B8903F" stroke-width="3"/>
+<path d="M28 44C54 36 82 38 100 46M28 62C54 54 82 56 100 64M28 80C54 72 82 74 100 82M120 46C138 38 166 36 192 44M120 64C138 56 166 54 192 62M120 82C138 74 166 72 192 80" stroke="#B8903F" stroke-opacity=".5" stroke-width="2" fill="none"/>
+</svg></div></div>
+<div aria-hidden="true" style="position:absolute;left:0;top:0;right:0;bottom:0;background:linear-gradient(90deg,rgba(8,16,38,.75) 0%,rgba(8,16,38,.35) 55%,rgba(8,16,38,.1) 100%)"></div>
+
+<div class="rise" style="position:relative;display:flex;align-items:center;gap:12px">
+<span style="width:46px;height:46px;border-radius:12px;border:1px solid rgba(242,212,154,.55);display:flex;align-items:center;justify-content:center;color:#F2D49A"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="M12 6C9.5 4.5 6 4.3 3 5.2V18c3-.9 6.5-.7 9 .8 2.5-1.5 6-1.7 9-.8V5.2c-3-.9-6.5-.7-9 .8zM12 6v12.8"/></svg></span>
+<span style="display:flex;flex-direction:column;line-height:1.2"><span style="font-weight:600;font-size:16px">[NAMA PERPUSTAKAAN]</span><span style="font-size:12px;color:#B9C4D8">Placeholder logo, ganti dengan aset resmi</span></span>
+</div>
+
+<div class="rise" style="position:relative;display:flex;flex-direction:column;gap:20px;max-width:560px;animation-delay:.15s">
+<h1 style="margin:0;font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:64px;line-height:1.02;letter-spacing:.02em;text-transform:uppercase">Literasi untuk<br><span style="color:#F2D49A">Indonesia maju</span></h1>
+<sc-if value="{{showDesc}}" hint-placeholder-val="{{ true }}"><p style="margin:0;font-size:17px;line-height:1.65;color:#DCE4F2;max-width:480px">Akses ribuan koleksi buku digital dan cetak, kapan saja dan di mana saja.</p></sc-if>
+</div>
+
+<sc-if value="{{showPerks}}" hint-placeholder-val="{{ true }}">
+<div class="rise" style="position:relative;display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:20px;animation-delay:.3s">
+<sc-for list="{{perks}}" as="p" hint-placeholder-count="3"><div style="display:flex;flex-direction:column;gap:6px;padding-top:14px;border-top:1px solid rgba(242,212,154,.4)"><span style="font-weight:600;font-size:15px;color:#F2D49A">{{p.t}}</span><span style="font-size:13px;line-height:1.5;color:#B9C4D8">{{p.d}}</span></div></sc-for>
+</div>
+</sc-if>
+</section>
+
+<!-- Kartu login -->
+<main style="{{cardWrap}}">
+<div class="rise {{shake}}" style="{{card}}">
+<div style="display:flex;flex-direction:column;gap:6px">
+<h2 style="margin:0;font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;font-size:38px;line-height:1.05;color:#FFFFFF">Masuk ke Akun</h2>
+<span style="font-size:15px;color:#B9C4D8">Lanjutkan ke perpustakaan digital.</span>
+</div>
+
+<div role="tablist" aria-label="Jenis akun" style="position:relative;display:grid;grid-template-columns:1fr 1fr;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:999px;padding:4px">
+<span class="pill" aria-hidden="true" style="{{pill}}"></span>
+<button type="button" role="tab" aria-selected="{{isMember}}" onClick="{{toMember}}" style="{{tabM}}">Anggota</button>
+<button type="button" role="tab" aria-selected="{{isAdmin}}" onClick="{{toAdmin}}" style="{{tabA}}">Admin</button>
+</div>
+<sc-if value="{{isAdmin}}" hint-placeholder-val="{{ false }}"><div class="rise" style="padding:12px 14px;border-radius:14px;background:rgba(242,212,154,.1);border:1px solid rgba(242,212,154,.35);font-size:13px;line-height:1.5;color:#F2D49A">Akses khusus petugas perpustakaan. Aktivitas masuk dicatat.</div></sc-if>
+
+<form style="display:flex;flex-direction:column;gap:16px" onSubmit="{{noSubmit}}">
+<div style="display:flex;flex-direction:column;gap:6px">
+<label for="em" style="font-size:14px;font-weight:600">{{idLabel}}</label>
+<div class="fld" style="{{emBox}}">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#B9C4D8" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+<input id="em" onInput="{{setEm}}" aria-invalid="{{emErr}}" placeholder="{{idPh}}" style="flex:1;min-width:0;border:0;outline:0;background:transparent;color:#FFFFFF;font-size:16px;padding:15px 0">
+</div>
+<sc-if value="{{emErr}}" hint-placeholder-val="{{ false }}"><span role="alert" style="font-size:13px;color:#FFB4A9">{{emMsg}}</span></sc-if>
+</div>
+<div style="display:flex;flex-direction:column;gap:6px">
+<label for="pw" style="font-size:14px;font-weight:600">Kata sandi</label>
+<div class="fld" style="{{pwBox}}">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#B9C4D8" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg>
+<input id="pw" type="{{pwType}}" onInput="{{setPw}}" aria-invalid="{{pwErr}}" placeholder="Masukkan kata sandi" style="flex:1;min-width:0;border:0;outline:0;background:transparent;color:#FFFFFF;font-size:16px;padding:15px 0">
+<button type="button" onClick="{{togglePw}}" aria-label="{{pwLabel}}" aria-pressed="{{showPw}}" style="width:44px;height:44px;border:0;border-radius:12px;background:transparent;color:#B9C4D8;display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/><sc-if value="{{hidePw}}" hint-placeholder-val="{{ true }}"><path d="M4 4l16 16"/></sc-if></svg></button>
+</div>
+<sc-if value="{{pwErr}}" hint-placeholder-val="{{ false }}"><span role="alert" style="font-size:13px;color:#FFB4A9">Kata sandi wajib diisi.</span></sc-if>
+</div>
+<div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px">
+<label style="display:flex;align-items:center;gap:10px;font-size:14px;color:#DCE4F2;min-height:44px"><input type="checkbox" style="width:18px;height:18px;accent-color:#D9B66F">Ingat saya</label>
+<a href="LoginPremium.dc.html" style="font-size:14px;font-weight:600;min-height:44px;display:flex;align-items:center">Lupa kata sandi?</a>
+</div>
+<button type="button" class="btn" onClick="{{submit}}" aria-busy="{{loading}}" style="{{cta}}">
+<sc-if value="{{loading}}" hint-placeholder-val="{{ false }}"><svg class="sp" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0B1733" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M12 3a9 9 0 019 9"/></svg></sc-if>
+{{ctaLabel}}
+<sc-if value="{{idle}}" hint-placeholder-val="{{ true }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0B1733" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></sc-if>
+</button>
+</form>
+
+<sc-if value="{{isMember}}" hint-placeholder-val="{{ true }}">
+<div style="display:flex;flex-direction:column;gap:16px">
+<div style="display:flex;align-items:center;gap:14px;font-size:13px;color:#B9C4D8"><span style="flex:1;height:1px;background:rgba(255,255,255,.16)"></span>atau masuk dengan<span style="flex:1;height:1px;background:rgba(255,255,255,.16)"></span></div>
+<button type="button" class="btn" style="padding:13px 20px;border:1px solid rgba(255,255,255,.28);border-radius:999px;background:rgba(255,255,255,.06);color:#FFFFFF;font-size:15px;font-weight:600;min-height:52px;display:flex;align-items:center;justify-content:center;gap:12px"><span aria-hidden="true" style="width:24px;height:24px;border-radius:99px;border:2px solid #DCE4F2;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#DCE4F2">G</span>Lanjutkan dengan Google</button>
+<span style="font-size:14px;color:#B9C4D8;text-align:center">Belum punya akun? <a href="LoginPremium.dc.html" style="font-weight:700">Daftar sekarang</a></span>
+</div>
+</sc-if>
+</div>
+</main>
+
+<sc-if value="{{toast}}" hint-placeholder-val="{{ false }}">
+<div role="status" aria-live="polite" class="toast" style="position:absolute;right:24px;bottom:24px;max-width:calc(100% - 48px);display:flex;gap:12px;align-items:center;padding:14px 18px;border-radius:16px;background:#10264A;border:1px solid rgba(242,212,154,.5);box-shadow:0 20px 40px -16px rgba(0,0,0,.6);font-size:14px"><span style="width:22px;height:22px;border-radius:99px;background:#6EE0A8;color:#06201D;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px">&#10003;</span>Berhasil masuk. Mengarahkan ke dashboard...</div>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1360,"height":900}}'>
+class Component extends DCLogic {
+constructor(props){ super(props); this.state = { role:'member', pw:false, em:'', pass:'', err:false, shake:false, loading:false, toast:false, px:0, py:0 }; }
+renderVals() {
+const s = this.state, V = 'desktop', admin = s.role==='admin';
+let seed = 11; const rnd = () => (seed = (seed*9301+49297) % 233280) / 233280;
+const emErr = s.err && !s.em, pwErr = s.err && !s.pass;
+const lay = (k,extra) => `position:absolute;left:-3%;right:-3%;top:-3%;bottom:-3%;transform:translate(${(s.px*k).toFixed(1)}px,${(s.py*k).toFixed(1)}px);${extra||''}`;
+const box = (bad) => `display:flex;align-items:center;gap:12px;padding:0 6px 0 16px;min-height:54px;box-sizing:border-box;border-radius:14px;border:1px solid ${bad?'#FF8F80':'rgba(255,255,255,.3)'};background:rgba(255,255,255,.06)`;
+const seg = (on) => `position:relative;z-index:1;padding:12px;border:0;border-radius:999px;background:transparent;color:${on?'#0B1733':'#DCE4F2'};font-size:15px;font-weight:600;min-height:46px`;
+const desk = V==='desktop', tab = V==='tablet';
+return {
+move: (e) => { if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return; const r = e.currentTarget.getBoundingClientRect(); const x = Math.round(((e.clientX - r.left)/r.width - .5)*24/4)*4, y = Math.round(((e.clientY - r.top)/r.height - .5)*16/4)*4; if (x!==s.px || y!==s.py) this.setState({ px:x, py:y }); },
+heroBox: desk ? 'position:relative;flex:1 1 56%;min-width:0;overflow:hidden;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;gap:40px;padding:48px 72px 48px 56px;min-height:900px' : `position:relative;overflow:hidden;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;gap:28px;padding:${tab?'40px 48px 110px':'24px 24px 90px'};min-height:${tab?'560px':'360px'}`,
+lSky: lay(.15,'background:linear-gradient(180deg,#050B1C 0%,#0B1733 45%,#183E70 100%)'),
+lStars: lay(.25), lBuild: lay(.5,'top:auto;height:62%;'), lParts: lay(.8), lBook: lay(1.1,`display:flex;align-items:center;justify-content:center;left:${desk?'8%':'30%'};right:auto;top:${desk?'30%':'14%'};bottom:auto;width:auto;`),
+stars: Array.from({length:40}, () => ({ style:`position:absolute;left:${(rnd()*100).toFixed(1)}%;top:${(rnd()*55).toFixed(1)}%;width:${1+Math.floor(rnd()*2)}px;height:${1+Math.floor(rnd()*2)}px;border-radius:99px;background:#F4F1EA;opacity:${(.3+rnd()*.6).toFixed(2)}` })),
+parts: Array.from({length:16}, () => ({ style:`position:absolute;left:${(rnd()*100).toFixed(1)}%;bottom:${(rnd()*40).toFixed(1)}%;width:${2+Math.floor(rnd()*3)}px;height:${2+Math.floor(rnd()*3)}px;border-radius:99px;background:#F2D49A;animation-delay:-${(rnd()*9).toFixed(1)}s;animation-duration:${(7+rnd()*6).toFixed(1)}s` })),
+showDesc: !(V==='mobile'), showPerks: desk,
+perks: [{t:'Koleksi lengkap',d:'Buku digital dan cetak dari berbagai bidang.'},{t:'Akses mudah',d:'Telusuri, pinjam, dan pantau dari satu akun.'},{t:'Digital dan modern',d:'Nyaman dipakai di ponsel maupun komputer.'}],
+cardWrap: desk ? 'position:relative;flex:1 1 44%;min-width:0;display:flex;align-items:center;justify-content:center;padding:48px 48px 48px 0;box-sizing:border-box' : `position:relative;margin-top:${tab?'-90px':'-70px'};display:flex;justify-content:center;padding:0 ${tab?'48px':'16px'} 40px;box-sizing:border-box`,
+card: `width:100%;max-width:${desk?'500px':'560px'};box-sizing:border-box;padding:${V==='mobile'?'28px 22px':'40px 40px 36px'};border-radius:32px;background:rgba(16,38,74,.58);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);border:1px solid rgba(242,212,154,.28);box-shadow:0 50px 90px -40px rgba(0,0,0,.7),0 0 0 1px rgba(255,255,255,.04) inset,0 0 80px -30px rgba(217,182,111,.35);display:flex;flex-direction:column;gap:20px`,
+shake: s.shake ? 'shk' : '',
+pill: `position:absolute;left:4px;top:4px;bottom:4px;width:calc(50% - 4px);border-radius:999px;background:#D9B66F;transform:translateX(${admin?'100%':'0'});`,
+tabM: seg(!admin), tabA: seg(admin), isMember: !admin, isAdmin: admin,
+toMember: () => this.setState({ role:'member', err:false }), toAdmin: () => this.setState({ role:'admin', err:false }),
+idLabel: admin ? 'Email admin atau ID petugas' : 'Email atau nomor anggota', idPh: admin ? 'Masukkan email atau ID petugas' : 'Masukkan email atau nomor anggota',
+emBox: box(emErr), pwBox: box(pwErr), emErr, pwErr, emMsg: admin ? 'ID petugas wajib diisi.' : 'Email atau nomor anggota wajib diisi.',
+setEm: (e) => this.setState({ em: e.target.value }), setPw: (e) => this.setState({ pass: e.target.value }), noSubmit: (e) => { if (e && e.preventDefault) e.preventDefault(); },
+showPw: s.pw, hidePw: !s.pw, pwType: s.pw?'text':'password', pwLabel: s.pw?'Sembunyikan kata sandi':'Tampilkan kata sandi', togglePw: () => this.setState({ pw: !s.pw }),
+loading: s.loading, idle: !s.loading, ctaLabel: s.loading ? 'Memproses...' : 'Masuk',
+cta: `padding:15px 20px;border:0;border-radius:999px;background:${s.loading?'#B8996A':'#D9B66F'};color:#0B1733;font-size:16px;font-weight:700;min-height:56px;display:flex;align-items:center;justify-content:center;gap:10px;`,
+submit: () => { if (s.loading) return; if (!s.em || !s.pass) { this.setState({ err:true, shake:true }); setTimeout(() => this.setState({ shake:false }), 400); return; } this.setState({ err:false, loading:true }); setTimeout(() => { this.setState({ loading:false, toast:true }); setTimeout(() => this.setState({ toast:false }), 3800); }, 1600); },
+toast: s.toast
+};
+}
+}
+</script>
+</body>
+</html>

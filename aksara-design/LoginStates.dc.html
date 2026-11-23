@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Login premium: komponen, state, dan spesifikasi</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:Inter,system-ui,sans-serif;background:#0B1733}
+@keyframes spin{to{transform:rotate(360deg)}}
+.sp{animation:spin .8s linear infinite}
+@media (prefers-reduced-motion:reduce){.sp{animation:none}}
+</style>
+</helmet>
+<div style="width:100%;background:#0B1733;color:#F4F1EA">
+<div style="max-width:1200px;margin:0 auto;padding:56px 40px 80px;display:flex;flex-direction:column;gap:56px">
+
+<header style="display:flex;flex-direction:column;gap:10px">
+<span style="font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:#F2D49A;font-weight:600">Login premium</span>
+<h1 style="margin:0;font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;font-size:52px;line-height:1.05">Komponen, state, dan spesifikasi</h1>
+<p style="margin:0;font-size:17px;line-height:1.6;color:#B9C4D8;max-width:660px">Isi referensi untuk implementasi. Kartu kaca navy dengan aksen emas champagne yang dipakai hemat: tombol utama, fokus, dan garis tipis.</p>
+</header>
+
+<section style="display:flex;flex-direction:column;gap:20px">
+<h2 style="margin:0;font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;font-size:32px;color:#F2D49A">Palet dan token</h2>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(150px,100%),1fr));gap:14px">
+<sc-for list="{{colors}}" as="c" hint-placeholder-count="8"><div style="border:1px solid rgba(255,255,255,.16);border-radius:16px;overflow:hidden"><div style="height:72px;background:{{c.hex}}"></div><div style="padding:12px 14px;display:flex;flex-direction:column;gap:2px"><span style="font-weight:600;font-size:14px">{{c.n}}</span><span style="font-size:13px;color:#B9C4D8">{{c.hex}}</span><span style="font-size:12px;color:#B9C4D8">{{c.u}}</span></div></div></sc-for>
+</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(260px,100%),1fr));gap:14px;font-size:14px;line-height:1.6;color:#DCE4F2">
+<div style="padding:18px 20px;border:1px solid rgba(255,255,255,.16);border-radius:16px"><b style="color:#F2D49A">Tipografi</b><br>Judul: Cormorant Garamond 600 sampai 700, huruf kapital untuk headline hero. Teks: Inter 400 sampai 600, input 16px agar tidak memicu zoom di iOS.</div>
+<div style="padding:18px 20px;border:1px solid rgba(255,255,255,.16);border-radius:16px"><b style="color:#F2D49A">Bentuk</b><br>Kartu radius 32px. Input 14px, tinggi 54px. Tombol dan toggle bentuk pil, tinggi 56px.</div>
+<div style="padding:18px 20px;border:1px solid rgba(255,255,255,.16);border-radius:16px"><b style="color:#F2D49A">Kaca</b><br>Latar rgba(16,38,74,.58), blur 22px, border emas 28%, bayangan berlapis, dan cahaya emas lembut di sekeliling.</div>
+</div>
+</section>
+
+<section style="display:flex;flex-direction:column;gap:20px">
+<h2 style="margin:0;font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;font-size:32px;color:#F2D49A">State input</h2>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(230px,100%),1fr));gap:20px">
+<sc-for list="{{inputs}}" as="i" hint-placeholder-count="5"><div style="display:flex;flex-direction:column;gap:8px"><span style="font-size:13px;color:#B9C4D8">{{i.name}}</span><div style="{{i.box}}"><span style="font-size:15px;color:{{i.tc}}">{{i.text}}</span></div><span style="font-size:13px;color:{{i.mc}}">{{i.msg}}</span></div></sc-for>
+</div>
+</section>
+
+<section style="display:flex;flex-direction:column;gap:20px">
+<h2 style="margin:0;font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;font-size:32px;color:#F2D49A">State tombol dan toggle</h2>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(230px,100%),1fr));gap:20px;align-items:start">
+<div style="display:flex;flex-direction:column;gap:8px"><span style="font-size:13px;color:#B9C4D8">Default</span><div style="padding:15px 20px;border-radius:999px;background:#D9B66F;color:#0B1733;font-weight:700;text-align:center;min-height:56px;box-sizing:border-box;display:flex;align-items:center;justify-content:center">Masuk</div></div>
+<div style="display:flex;flex-direction:column;gap:8px"><span style="font-size:13px;color:#B9C4D8">Hover: naik 2px, bayangan emas</span><div style="padding:15px 20px;border-radius:999px;background:#E6C57F;color:#0B1733;font-weight:700;text-align:center;min-height:56px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;box-shadow:0 18px 30px -14px rgba(217,182,111,.55);transform:translateY(-2px)">Masuk</div></div>
+<div style="display:flex;flex-direction:column;gap:8px"><span style="font-size:13px;color:#B9C4D8">Loading</span><div style="padding:15px 20px;border-radius:999px;background:#B8996A;color:#0B1733;font-weight:700;min-height:56px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;gap:10px"><svg class="sp" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0B1733" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M12 3a9 9 0 019 9"/></svg>Memproses...</div></div>
+<div style="display:flex;flex-direction:column;gap:8px"><span style="font-size:13px;color:#B9C4D8">Sekunder (Google)</span><div style="padding:13px 20px;border-radius:999px;border:1px solid rgba(255,255,255,.28);background:rgba(255,255,255,.06);font-weight:600;text-align:center;min-height:52px;box-sizing:border-box;display:flex;align-items:center;justify-content:center">Lanjutkan dengan Google</div></div>
+</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr));gap:20px">
+<div style="display:flex;flex-direction:column;gap:8px"><span style="font-size:13px;color:#B9C4D8">Toggle: Anggota aktif</span><div style="position:relative;display:grid;grid-template-columns:1fr 1fr;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:999px;padding:4px"><span style="position:absolute;left:4px;top:4px;bottom:4px;width:calc(50% - 4px);border-radius:999px;background:#D9B66F"></span><span style="position:relative;padding:12px;text-align:center;font-weight:600;color:#0B1733">Anggota</span><span style="position:relative;padding:12px;text-align:center;font-weight:600;color:#DCE4F2">Admin</span></div></div>
+<div style="display:flex;flex-direction:column;gap:8px"><span style="font-size:13px;color:#B9C4D8">Toggle: Admin aktif (pil bergeser 0,35 detik)</span><div style="position:relative;display:grid;grid-template-columns:1fr 1fr;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:999px;padding:4px"><span style="position:absolute;left:4px;top:4px;bottom:4px;width:calc(50% - 4px);border-radius:999px;background:#D9B66F;transform:translateX(100%)"></span><span style="position:relative;padding:12px;text-align:center;font-weight:600;color:#DCE4F2">Anggota</span><span style="position:relative;padding:12px;text-align:center;font-weight:600;color:#0B1733">Admin</span></div></div>
+</div>
+</section>
+
+<section style="display:flex;flex-direction:column;gap:20px">
+<h2 style="margin:0;font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;font-size:32px;color:#F2D49A">Toast</h2>
+<div style="display:flex;flex-wrap:wrap;gap:16px">
+<sc-for list="{{toasts}}" as="t" hint-placeholder-count="3"><div style="display:flex;gap:12px;align-items:center;padding:14px 18px;border-radius:16px;background:#10264A;border:1px solid rgba(242,212,154,.5);font-size:14px"><span style="width:22px;height:22px;border-radius:99px;background:{{t.c}};color:#06101F;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px">{{t.i}}</span>{{t.m}}</div></sc-for>
+</div>
+</section>
+
+<section style="display:flex;flex-direction:column;gap:20px">
+<h2 style="margin:0;font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;font-size:32px;color:#F2D49A">Anggota dan Admin</h2>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(320px,100%),1fr));gap:16px;font-size:14px;line-height:1.7;color:#DCE4F2">
+<div style="padding:22px;border:1px solid rgba(255,255,255,.16);border-radius:20px"><b style="color:#F2D49A;font-size:16px">Anggota</b><br>Kolom: email atau nomor anggota.<br>Ada login Google dan tautan daftar.<br>Setelah masuk: dashboard anggota.</div>
+<div style="padding:22px;border:1px solid rgba(255,255,255,.16);border-radius:20px"><b style="color:#F2D49A;font-size:16px">Admin</b><br>Kolom: email admin atau ID petugas.<br>Muncul catatan "akses khusus petugas".<br>Login Google dan daftar disembunyikan.<br>Setelah masuk: dashboard admin.</div>
+</div>
+</section>
+
+<section style="display:flex;flex-direction:column;gap:20px">
+<h2 style="margin:0;font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;font-size:32px;color:#F2D49A">Spesifikasi animasi</h2>
+<div style="overflow-x:auto;border:1px solid rgba(255,255,255,.16);border-radius:20px">
+<table style="width:100%;border-collapse:collapse;min-width:640px;font-size:14px">
+<thead><tr style="text-align:left;color:#B9C4D8;font-size:12px"><th style="padding:14px 18px;font-weight:600">Elemen</th><th style="padding:14px 18px;font-weight:600">Efek</th><th style="padding:14px 18px;font-weight:600">Durasi</th></tr></thead>
+<tbody><sc-for list="{{anim}}" as="a" hint-placeholder-count="9"><tr style="border-top:1px solid rgba(255,255,255,.12)"><td style="padding:12px 18px;font-weight:500">{{a.e}}</td><td style="padding:12px 18px;color:#DCE4F2">{{a.f}}</td><td style="padding:12px 18px;color:#B9C4D8">{{a.d}}</td></tr></sc-for></tbody>
+</table></div>
+<p style="margin:0;font-size:14px;line-height:1.6;color:#B9C4D8">Semua animasi dan parallax dimatikan bila prefers-reduced-motion aktif. Parallax hanya memakai transform sehingga ringan.</p>
+</section>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1360,"height":2300}}'>
+class Component extends DCLogic {
+renderVals() {
+const box = (b,bg) => `display:flex;align-items:center;gap:12px;padding:0 16px;min-height:54px;box-sizing:border-box;border-radius:14px;border:1px solid ${b};background:${bg||'rgba(255,255,255,.06)'}`;
+return {
+colors: [['Midnight Navy','#0B1733','Latar utama'],['Deep Navy','#10264A','Kartu kaca'],['Royal Blue','#183E70','Langit, panel'],['Champagne Gold','#D9B66F','Tombol utama, toggle aktif'],['Warm Gold','#F2D49A','Judul aksen, fokus, tautan'],['Ivory','#F4F1EA','Teks utama'],['Mist','#B9C4D8','Teks sekunder'],['Galat','#FFB4A9','Pesan galat']].map(c => ({ n:c[0], hex:c[1], u:c[2] })),
+inputs: [['Default','rgba(255,255,255,.3)','Masukkan email','#B9C4D8','',''],['Fokus','#F2D49A','nadia@contoh.id','#FFFFFF','Cincin emas 4px','#F2D49A'],['Galat','#FF8F80','','#B9C4D8','Email atau nomor anggota wajib diisi.','#FFB4A9'],['Berhasil','#6EE0A8','nadia@contoh.id','#FFFFFF','Format valid','#6EE0A8'],['Nonaktif','rgba(255,255,255,.12)','Tidak tersedia','#7F8CA6','','']].map(i => ({ name:i[0], box: box(i[1], i[0]==='Nonaktif'?'rgba(255,255,255,.03)':''), text:i[2]||'Masukkan email', tc:i[3], msg:i[4], mc:i[5]||'#B9C4D8' })),
+toasts: [['Berhasil masuk. Mengarahkan ke dashboard...','#6EE0A8','✓'],['Email atau kata sandi tidak cocok.','#FFB4A9','!'],['Sesi berakhir, silakan masuk lagi.','#F2D49A','i']].map(t => ({ m:t[0], c:t[1], i:t[2] })),
+anim: [['Kartu login','Fade-in dan naik 24px','0,9 detik'],['Judul dan fitur hero','Muncul berurutan, jeda 0,15 detik','0,9 detik'],['Buku mengambang','Naik turun 14px dan miring 2 derajat','7 detik, berulang'],['Partikel emas','Melayang naik lalu memudar','7 sampai 13 detik'],['Latar gradien','Bergeser pelan','24 detik'],['Parallax adegan','Lapisan bergeser mengikuti kursor','0,25 detik'],['Fokus input','Border emas dan cincin','0,2 detik'],['Tombol hover','Naik 2px dan bayangan emas','0,2 detik'],['Toggle Anggota/Admin','Pil emas bergeser','0,35 detik'],['Kolom kosong saat kirim','Kartu bergetar 4px dan pesan galat','0,35 detik'],['Toast','Naik 16px sambil muncul, hilang otomatis','3,8 detik']].map(a => ({ e:a[0], f:a[1], d:a[2] }))
+};
+}
+}
+</script>
+</body>
+</html>

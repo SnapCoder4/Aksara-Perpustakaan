@@ -1,0 +1,35 @@
+{% extends "app_shell.html" %}
+{% from "partials/pagination.html" import pagination %}
+{% set panel = "admin" %}
+{% block title %}Anggota{% endblock %}
+{% block content %}
+<div class="toolbar-admin">
+  <div><span class="kicker">Sirkulasi</span><h1 class="page-title">Anggota</h1></div>
+  <a href="/admin/anggota/tambah" class="btn">+ Tambah anggota</a>
+</div>
+<form class="search-inline" method="get" role="search">
+  <label class="sr-only" for="q">Cari anggota</label>
+  <input id="q" class="input" name="q" value="{{ q }}" placeholder="Cari nama, nomor, atau email" maxlength="80">
+  <button class="btn btn-ghost btn-sm" type="submit">Cari</button>
+</form>
+<div class="card">
+  <div class="table-wrap"><table class="table">
+    <thead><tr><th>Anggota</th><th>Nomor anggota</th><th class="num">Pinjaman aktif</th><th>Status</th><th><span class="sr-only">Aksi</span></th></tr></thead>
+    <tbody>
+    {% for m in members %}
+      <tr>
+        <td><b>{{ m.nama }}</b><br><span class="hint">{{ m.email or m.no_hp }}</span></td>
+        <td>{{ m.id_member }}</td>
+        <td class="num">{{ active.get(m.id_member, 0) }}</td>
+        <td><span class="chip {{ 'chip-ok' if (m.status or 'Aktif') == 'Aktif' else 'chip-warn' }}">{{ m.status or "Aktif" }}</span>{% if not m.password %} <span class="chip" title="Belum bisa login">Tanpa sandi</span>{% endif %}</td>
+        <td><div class="actions">
+          <a class="btn btn-ghost btn-sm" href="/admin/anggota/{{ m.id_member }}/edit">Edit</a>
+          <form method="post" action="/admin/anggota/{{ m.id_member }}/hapus" data-confirm="Hapus anggota &quot;{{ m.nama }}&quot;?"><button class="btn btn-danger btn-sm" type="submit">Hapus</button></form>
+        </div></td>
+      </tr>
+    {% else %}<tr><td colspan="5"><div class="empty"><span class="serif">Tidak ada anggota.</span></div></td></tr>{% endfor %}
+    </tbody>
+  </table></div>
+  <div class="row between wrap-flex gap-12" style="margin-top:16px"><span class="hint">{{ total }} anggota</span>{{ pagination(request, page, pages) }}</div>
+</div>
+{% endblock %}

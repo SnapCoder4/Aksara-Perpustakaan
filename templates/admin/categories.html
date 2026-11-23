@@ -1,0 +1,35 @@
+{% extends "app_shell.html" %}
+{% set panel = "admin" %}
+{% block title %}Kategori{% endblock %}
+{% block content %}
+<div><span class="kicker">Koleksi</span><h1 class="page-title">Kategori</h1></div>
+<div class="split">
+  <section class="card main-col">
+    <div class="table-wrap"><table class="table" style="min-width:420px">
+      <thead><tr><th>Nama kategori</th><th class="num">Jumlah buku</th><th><span class="sr-only">Aksi</span></th></tr></thead>
+      <tbody>
+      {% for c, n in rows %}
+        <tr>
+          <td>
+            <form method="post" action="/admin/kategori/{{ c.id }}/ubah" class="row gap-8">
+              <label class="sr-only" for="cat-{{ c.id }}">Nama kategori</label>
+              <input class="input" id="cat-{{ c.id }}" name="nama" value="{{ c.nama }}" maxlength="60" style="min-height:44px">
+              <button class="btn btn-ghost btn-sm" type="submit">Simpan</button>
+            </form>
+          </td>
+          <td class="num">{{ n }}</td>
+          <td><div class="actions"><form method="post" action="/admin/kategori/{{ c.id }}/hapus" data-confirm="Hapus kategori &quot;{{ c.nama }}&quot;?"><button class="btn btn-danger btn-sm" type="submit">Hapus</button></form></div></td>
+        </tr>
+      {% else %}<tr><td colspan="3"><div class="empty"><span class="serif">Belum ada kategori.</span></div></td></tr>{% endfor %}
+      </tbody>
+    </table></div>
+  </section>
+  <section class="card side-col">
+    <h2 style="margin-bottom:14px">Tambah kategori</h2>
+    <form method="post" action="/admin/kategori/tambah" class="stack gap-12">
+      <div class="field"><label for="nama">Nama kategori</label><input class="input" id="nama" name="nama" required maxlength="60" placeholder="Contoh: Filsafat"></div>
+      <button class="btn" type="submit">Tambah</button>
+    </form>
+  </section>
+</div>
+{% endblock %}

@@ -1,0 +1,13 @@
+{% macro pagination(request, page, pages) -%}
+{% if pages > 1 %}
+<nav class="pager" aria-label="Halaman">
+  {% if page > 1 %}<a href="{{ url_with(request, page=page-1) }}" aria-label="Sebelumnya">‹</a>{% else %}<span class="off" aria-hidden="true">‹</span>{% endif %}
+  {% for p in range(1, pages + 1) %}
+    {% if p == 1 or p == pages or (p - page)|abs <= 1 %}
+      {% if p == page %}<span class="on" aria-current="page">{{ p }}</span>{% else %}<a href="{{ url_with(request, page=p) }}">{{ p }}</a>{% endif %}
+    {% elif (p - page)|abs == 2 %}<span class="off">…</span>{% endif %}
+  {% endfor %}
+  {% if page < pages %}<a href="{{ url_with(request, page=page+1) }}" aria-label="Berikutnya">›</a>{% else %}<span class="off" aria-hidden="true">›</span>{% endif %}
+</nav>
+{% endif %}
+{%- endmacro %}

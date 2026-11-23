@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Aksara: Beranda mobile</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>.t{--page:#F6F2E9;--paper:#F6F2E9;--card:#FFFFFF;--soft:#E6ECF5;--bd:#E2DDD0;--bd2:#C3CBDB;--ink:#0B1733;--ink2:#1E2B4A;--mut:#4A5873;--strong:#10264A;--pri:#10264A;--onpri:#FBF8F2;--link:#183E70;--gold:#8A5A0B;--ok:#0A6B3B;--warn:#8A3B12;--err:#8F2A22;--errtx:#5A3A37;--dz:#EEF2F9;--dzi:#DCE5F3;--dzb:#9FB2D0;--errbg:#FCF1EF;--erri:#F6DAD6;--errbd:#D69A93;}.t[data-theme=dark]{--page:#0B1733;--paper:#0B1733;--card:#10264A;--soft:#16305A;--bd:#1E3760;--bd2:#3A5686;--ink:#F4F1EA;--ink2:#DCE4F2;--mut:#A9B7D0;--strong:#F4F1EA;--pri:#D9B66F;--onpri:#0B1733;--link:#F2D49A;--gold:#E0B35A;--ok:#6EE0A8;--warn:#F2A06B;--err:#FF9C92;--errtx:#E8C4C0;--dz:#0F2147;--dzi:#1B3A6B;--dzb:#3A5686;--errbg:#2A1513;--erri:#4A2420;--errbd:#7A3A34;}
+body{margin:0;font-family:Inter,system-ui,sans-serif;color:#14201F}
+a{color:#183E70;text-decoration:none}
+button{font-family:inherit;cursor:pointer}
+</style>
+</helmet>
+<div class="t" data-theme="{{theme}}" style="color:var(--ink);background:var(--page);width:390px;height:1900px;box-sizing:border-box;background:var(--paper);display:flex;flex-direction:column;position:relative;overflow:hidden">
+
+<header style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px">
+<span style="display:flex;align-items:center;gap:10px"><span style="width:36px;height:36px;border-radius:10px;background:var(--pri);color:var(--onpri);display:flex;align-items:center;justify-content:center;font-family:Fraunces,Georgia,serif;font-size:21px">A</span><span style="font-family:Fraunces,Georgia,serif;font-size:20px;font-weight:600">Aksara</span></span>
+<span style="display:flex;gap:8px;align-items:center"><button type="button" onClick="{{toggleTheme}}" style="padding:10px 16px;border:1px solid var(--bd2);border-radius:999px;background:transparent;color:var(--ink);font-size:14px;font-weight:500;min-height:44px">{{themeLabel}}</button><button type="button" aria-label="Buka menu" style="width:48px;height:48px;border:1px solid var(--bd2);border-radius:14px;background:var(--card);display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" style="stroke:var(--ink)" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button></span>
+</header>
+
+<section style="padding:20px 20px 32px;display:flex;flex-direction:column;gap:20px">
+<span style="font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:600">Perpustakaan digital nasional</span>
+<h1 style="margin:0;font-family:Fraunces,Georgia,serif;font-weight:500;font-size:40px;line-height:1.05;letter-spacing:-.02em;color:var(--strong);text-wrap:balance">Pengetahuan yang mudah dijangkau.</h1>
+<p style="margin:0;font-size:16px;line-height:1.6;color:var(--mut)">Telusuri koleksi, pinjam dalam beberapa klik, pantau dari satu akun.</p>
+<form style="display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--bd2);border-radius:999px;padding:6px 6px 6px 18px">
+<label for="q" style="position:absolute;left:-9999px">Cari buku</label>
+<input id="q" placeholder="Cari judul atau penulis" style="flex:1;min-width:0;border:0;outline:0;font:inherit;font-size:16px;padding:10px 0;background:transparent">
+<button type="button" aria-label="Cari" style="width:48px;height:48px;border:0;border-radius:999px;background:var(--pri);display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FBF8F2" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg></button>
+</form>
+</section>
+
+<section style="background:#10264A;color:#FBF8F2;padding:28px 20px;display:grid;grid-template-columns:1fr 1fr;gap:20px">
+<sc-for list="{{stats}}" as="s" hint-placeholder-count="4"><div style="display:flex;flex-direction:column;gap:2px"><span style="font-family:Fraunces,Georgia,serif;font-size:32px;line-height:1;font-weight:500">{{s.n}}</span><span style="font-size:13px;color:#C3CFE6">{{s.l}}</span></div></sc-for>
+</section>
+
+<section style="padding:36px 0 8px;display:flex;flex-direction:column;gap:18px">
+<div style="display:flex;justify-content:space-between;align-items:baseline;padding:0 20px"><h2 style="margin:0;font-family:Fraunces,Georgia,serif;font-weight:500;font-size:26px">Paling dipinjam</h2><a href="Katalog.dc.html" style="font-size:14px;font-weight:500;min-height:44px;display:flex;align-items:center">Semua</a></div>
+<div style="display:flex;gap:16px;overflow-x:auto;padding:4px 20px 16px;scroll-snap-type:x mandatory">
+<sc-for list="{{books}}" as="b" hint-placeholder-count="4">
+<a href="Detail.dc.html" style="flex:none;width:150px;display:flex;flex-direction:column;gap:10px;color:var(--ink);scroll-snap-align:start">
+<div style="{{b.cover}}"><span style="font-size:9px;letter-spacing:.14em;text-transform:uppercase;opacity:.8">{{b.tag}}</span><span style="font-family:Fraunces,Georgia,serif;font-size:18px;line-height:1.1;font-weight:500">{{b.title}}</span></div>
+<span style="font-weight:600;font-size:14px">{{b.title}}</span>
+<span style="font-size:13px;color:var(--mut);margin-top:-8px">{{b.author}}</span>
+</a>
+</sc-for>
+</div>
+</section>
+
+<section style="padding:28px 20px 8px;display:flex;flex-direction:column;gap:16px">
+<h2 style="margin:0;font-family:Fraunces,Georgia,serif;font-weight:500;font-size:26px">Kategori</h2>
+<div style="display:flex;flex-wrap:wrap;gap:10px">
+<sc-for list="{{cats}}" as="c" hint-placeholder-count="6"><a href="Katalog.dc.html" style="padding:12px 20px;border-radius:999px;background:{{c.bg}};color:#14201F;font-size:15px;font-weight:500;min-height:44px;box-sizing:border-box;display:flex;align-items:center">{{c.n}}</a></sc-for>
+</div>
+</section>
+
+<section style="padding:32px 20px">
+<div style="background:#183E70;color:#FBF8F2;border-radius:24px;padding:28px 24px;display:flex;flex-direction:column;gap:14px">
+<h2 style="margin:0;font-family:Fraunces,Georgia,serif;font-weight:500;font-size:28px;line-height:1.1">Daftar gratis dan pinjam buku pertamamu.</h2>
+<a href="Login.dc.html" style="align-self:flex-start;padding:14px 26px;border-radius:999px;background:var(--paper);color:var(--strong);font-size:15px;font-weight:600;min-height:48px;box-sizing:border-box;display:flex;align-items:center">Buat akun</a>
+</div>
+</section>
+
+<nav aria-label="Navigasi bawah" style="position:absolute;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--bd);display:flex;justify-content:space-around;padding:8px 8px 12px">
+<sc-for list="{{tabs}}" as="t" hint-placeholder-count="4"><a href="{{t.href}}" style="min-width:64px;min-height:48px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:12px;font-weight:{{t.w}};color:{{t.c}}"><span style="width:20px;height:4px;border-radius:99px;background:{{t.bar}}"></span>{{t.l}}</a></sc-for>
+</nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1900}}'>
+class Component extends DCLogic {
+constructor(props){ super(props); this.state = { theme:'dark' }; }
+renderVals() {
+const pal = [['#183E70','#FBF8F2'],['#B7791F','#1B1206'],['#243B5A','#FBF8F2'],['#7A2E2B','#FBF8F2']];
+const bk = [['Jejak Nusantara','Sari Wulandari','Sejarah'],['Mesin dan Makna','Dimas Pratama','Teknologi'],['Hujan di Kota Tua','Lestari Anjani','Sastra'],['Peta Bintang','Rini Kusuma','Sains']];
+const cb = ['#E8DCC4','#DCE5F3','#E9E2F1','#F3DDC9','#DDE7F1','#F1E3E3'];
+return {
+theme:this.state.theme, toggleTheme:()=>this.setState({theme:this.state.theme==='dark'?'light':'dark'}), themeLabel:this.state.theme==='dark'?'Mode terang':'Mode gelap',
+stats: [{n:'12.480',l:'Judul koleksi'},{n:'3.215',l:'Anggota aktif'},{n:'18',l:'Kategori'},{n:'940',l:'Koleksi digital'}],
+books: bk.map((b,i) => ({ title:b[0], author:b[1], tag:b[2], cover:`background:${pal[i][0]};color:${pal[i][1]};border-radius:5px 10px 10px 5px;box-sizing:border-box;box-shadow:inset 5px 0 0 rgba(0,0,0,.14),0 14px 24px -16px rgba(10,53,52,.5);display:flex;flex-direction:column;justify-content:space-between;padding:14px 12px;aspect-ratio:3/4;width:100%;` })),
+cats: ['Sejarah','Sastra','Teknologi','Sains','Ekonomi','Bahasa'].map((n,i) => ({ n, bg: cb[i] })),
+tabs: [['Beranda','Main.dc.html',true],['Katalog','Katalog.dc.html',false],['Pinjaman','Login.dc.html',false],['Akun','Login.dc.html',false]].map(t => ({ l:t[0], href:t[1], w: t[2]?600:500, c: t[2]?'var(--strong)':'var(--mut)', bar: t[2]?'var(--pri)':'transparent' }))
+};
+}
+}
+</script>
+</body>
+</html>

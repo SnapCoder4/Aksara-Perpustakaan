@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Tentang{% endblock %}
+{% block css %}<link rel="stylesheet" href="/static/css/pages/public.css">{% endblock %}
+{% block content %}
+<div class="wrap">
+  <header class="page-head" style="padding-top:56px">
+    <span class="kicker">Tentang Aksara</span>
+    <h1 class="h1" style="margin:16px 0 28px;font-size:clamp(36px,5.5vw,56px)">Perpustakaan yang menemani setiap pembaca.</h1>
+  </header>
+  <div class="prose">
+    <p>Aksara adalah perpustakaan digital bergaya institusi nasional. Anggota dapat menelusuri katalog, melihat ketersediaan buku secara langsung, meminjam, dan memantau tanggal jatuh tempo dari satu akun.</p>
+    <p>Petugas perpustakaan mengelola koleksi, anggota, peminjaman, pengembalian, denda, dan laporan lewat panel admin.</p>
+  </div>
+  <div class="values">
+    <div class="card"><h3 class="h3">Mudah dijangkau</h3><p class="muted" style="margin-top:8px">Katalog terbuka untuk siapa saja. Cukup daftar untuk meminjam.</p></div>
+    <div class="card"><h3 class="h3">Transparan</h3><p class="muted" style="margin-top:8px">Stok, batas kembali, dan denda terlihat jelas bagi anggota maupun petugas.</p></div>
+    <div class="card"><h3 class="h3">Terawat</h3><p class="muted" style="margin-top:8px">Data koleksi dan riwayat peminjaman tersimpan rapi dan bisa dilaporkan kapan saja.</p></div>
+  </div>
+  <div style="margin:48px 0 24px"><a class="btn" href="/katalog">Jelajahi katalog</a></div>
+</div>
+{% endblock %}

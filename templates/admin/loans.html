@@ -1,0 +1,41 @@
+{% extends "app_shell.html" %}
+{% from "partials/pagination.html" import pagination %}
+{% set panel = "admin" %}
+{% block title %}Peminjaman{% endblock %}
+{% block content %}
+<div class="toolbar-admin">
+  <div><span class="kicker">Sirkulasi</span><h1 class="page-title">Peminjaman dan pengembalian</h1></div>
+  <a href="/admin/peminjaman/baru" class="btn">+ Catat peminjaman</a>
+</div>
+<div class="tabs" role="group" aria-label="Filter status" style="align-self:flex-start">
+  <a href="/admin/peminjaman" class="{{ 'on' if not status }}">Semua</a>
+  <a href="/admin/peminjaman?status=Dipinjam" class="{{ 'on' if status == 'Dipinjam' }}">Dipinjam</a>
+  <a href="/admin/peminjaman?status=Terlambat" class="{{ 'on' if status == 'Terlambat' }}">Terlambat</a>
+  <a href="/admin/peminjaman?status=Dikembalikan" class="{{ 'on' if status == 'Dikembalikan' }}">Dikembalikan</a>
+</div>
+<div class="card">
+  <div class="table-wrap"><table class="table" style="min-width:760px">
+    <thead><tr><th>Anggota</th><th>Buku</th><th>Pinjam</th><th>Batas kembali</th><th>Status</th><th class="num">Denda</th><th><span class="sr-only">Aksi</span></th></tr></thead>
+    <tbody>
+    {% for l in loans %}{% set st = loan_status(l) %}
+      <tr>
+        <td>{{ l.member.nama if l.member else l.id_member }}<br><span class="hint">{{ l.id_member }}</span></td>
+        <td style="font-weight:500">{{ l.book.judul if l.book else l.kode_buku }}</td>
+        <td>{{ l.tanggal_pinjam|tgl }}</td>
+        <td>{{ l.jatuh_tempo|tgl }}{% if l.tanggal_kembali %}<br><span class="hint">kembali {{ l.tanggal_kembali|tgl }}</span>{% endif %}</td>
+        <td><span class="chip {{ 'chip-err' if st == 'Terlambat' else 'chip-ok' if st == 'Dikembalikan' else 'chip-warn' }}">{{ st }}</span></td>
+        {% set d = l.denda if l.status == "Dikembalikan" else fine_for(l, settings.fine_per_day) %}
+        <td class="num">{{ d|rupiah if d else "-" }}</td>
+        <td><div class="actions">
+          {% if l.status == "Dipinjam" %}
+          <form method="post" action="/admin/peminjaman/{{ l.id }}/kembali" data-confirm="Tandai buku ini sudah dikembalikan?"><button class="btn btn-sm" type="submit">Kembalikan</button></form>
+          {% endif %}
+          <form method="post" action="/admin/peminjaman/{{ l.id }}/hapus" data-confirm="Hapus transaksi ini? Bila masih dipinjam, stok dikembalikan."><button class="btn btn-danger btn-sm" type="submit">Hapus</button></form>
+        </div></td>
+      </tr>
+    {% else %}<tr><td colspan="7"><div class="empty"><span class="serif">Belum ada transaksi.</span></div></td></tr>{% endfor %}
+    </tbody>
+  </table></div>
+  <div class="row between wrap-flex gap-12" style="margin-top:16px"><span class="hint">{{ total }} transaksi · denda {{ settings.fine_per_day|rupiah }}/hari · masa pinjam {{ settings.loan_days }} hari</span>{{ pagination(request, page, pages) }}</div>
+</div>
+{% endblock %}

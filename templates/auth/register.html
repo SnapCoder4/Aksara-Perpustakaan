@@ -1,0 +1,28 @@
+{% extends "auth/_layout.html" %}
+{% block title %}Daftar{% endblock %}
+{% block card %}
+{% macro fld(name, label, type="text", ph="", ac="off", max=120) %}
+<div class="stack" style="gap:6px">
+  <label for="{{ name }}" style="font-size:14px;font-weight:600">{{ label }}</label>
+  <div class="fld{{ ' bad' if errors.get(name) }}">
+    <input id="{{ name }}" name="{{ name }}" type="{{ type }}" value="{{ form.get(name, '') if type != 'password' else '' }}" required placeholder="{{ ph }}" autocomplete="{{ ac }}" maxlength="{{ max }}" aria-invalid="{{ 'true' if errors.get(name) else 'false' }}">
+  </div>
+  <span class="field-error" role="alert" data-err {{ "hidden" if not errors.get(name) }}>{{ errors.get(name) or label ~ " wajib diisi." }}</span>
+</div>
+{% endmacro %}
+<div class="glass{{ ' shake' if errors }}">
+  <div class="stack" style="gap:6px">
+    <h2>Buat Akun Anggota</h2>
+    <span class="sub">Gratis. Satu akun untuk meminjam dan memantau bukumu.</span>
+  </div>
+  <form method="post" action="/register" data-validate novalidate>
+    {{ fld("nama", "Nama lengkap", ph="Nama sesuai identitas", ac="name", max=100) }}
+    {{ fld("email", "Email", "email", "nama@email.com", "email") }}
+    {{ fld("no_hp", "Nomor HP", "tel", "08xxxxxxxxxx", "tel", 20) }}
+    {{ fld("password", "Kata sandi", "password", "Minimal 8 karakter", "new-password", 72) }}
+    {{ fld("konfirmasi", "Ulangi kata sandi", "password", "Ketik ulang kata sandi", "new-password", 72) }}
+    <button type="submit" class="btn cta-btn btn-block" data-loading-btn><span class="spin" aria-hidden="true"></span>Daftar</button>
+  </form>
+  <span class="alt">Sudah punya akun? <a href="/login" style="font-weight:700">Masuk</a></span>
+</div>
+{% endblock %}

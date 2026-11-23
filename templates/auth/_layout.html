@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{# Layout login premium: adegan sinematik kiri, kartu kaca kanan. Anak mengisi: title, card #}
+{% block css %}<link rel="stylesheet" href="/static/css/pages/auth.css">{% endblock %}
+{% block shell %}
+<div class="auth">
+  <div class="auth-theme"><button type="button" class="theme-btn" data-theme-toggle aria-pressed="true">Mode terang</button></div>
+  <section class="auth-hero" aria-label="Aksara">
+    <div class="auth-sky" aria-hidden="true"></div>
+    <div class="auth-glow" aria-hidden="true"></div>
+    <div class="auth-build" aria-hidden="true">
+      <svg viewBox="0 0 800 420" preserveAspectRatio="xMidYMax slice">
+        <defs>
+          <linearGradient id="gb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1B3358"/><stop offset="1" stop-color="#0B1733"/></linearGradient>
+          <linearGradient id="gw" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F2D49A" stop-opacity=".95"/><stop offset="1" stop-color="#D9B66F" stop-opacity=".55"/></linearGradient>
+        </defs>
+        <path d="M0 420V330h120V300h60v30h40V260h70V210h110V160h60V210h110V260h70v70h50V300h60v30h110v90z" fill="url(#gb)"/>
+        <rect x="250" y="210" width="300" height="12" fill="#2A4A7A"/>
+        <g fill="url(#gw)">
+          {% for x in range(262, 540, 26) %}<rect x="{{ x }}" y="236" width="14" height="70"/>{% endfor %}
+          <rect x="372" y="178" width="14" height="24"/><rect x="400" y="178" width="14" height="24"/><rect x="428" y="178" width="14" height="24"/>
+        </g>
+        <rect x="0" y="360" width="800" height="60" fill="#0B1733" opacity=".75"/>
+      </svg>
+    </div>
+    <div class="auth-book" aria-hidden="true">
+      <svg viewBox="0 0 220 140" width="170">
+        <path d="M110 30C84 14 44 12 14 24V118C44 106 84 108 110 124Z" fill="#F4E7C8"/>
+        <path d="M110 30C136 14 176 12 206 24V118C176 106 136 108 110 124Z" fill="#E9D5A6"/>
+        <path d="M110 30V124" stroke="#B8903F" stroke-width="3"/>
+        <path d="M28 44C54 36 82 38 100 46M28 62C54 54 82 56 100 64M28 80C54 72 82 74 100 82M120 46C138 38 166 36 192 44M120 64C138 56 166 54 192 62M120 82C138 74 166 72 192 80" stroke="#B8903F" stroke-opacity=".5" stroke-width="2" fill="none"/>
+      </svg>
+    </div>
+    <div class="auth-shade" aria-hidden="true"></div>
+
+    <a href="/" class="auth-brand z">
+      <span class="mk" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M12 6C9.5 4.5 6 4.3 3 5.2V18c3-.9 6.5-.7 9 .8 2.5-1.5 6-1.7 9-.8V5.2c-3-.9-6.5-.7-9 .8zM12 6v12.8"/></svg></span>
+      <span class="stack" style="line-height:1.2"><b style="font-size:16px">Aksara</b><span style="font-size:12px;color:#B9C4D8">Perpustakaan digital nasional</span></span>
+    </a>
+    <div class="z rv">
+      <h1>Literasi untuk<br><span>Indonesia maju</span></h1>
+      <p class="lead">Akses koleksi buku kapan saja dan di mana saja.</p>
+    </div>
+    <div class="perks z">
+      <div><b>Koleksi lengkap</b><span>Buku dari berbagai bidang.</span></div>
+      <div><b>Akses mudah</b><span>Telusuri, pinjam, dan pantau dari satu akun.</span></div>
+      <div><b>Digital dan modern</b><span>Nyaman di ponsel maupun komputer.</span></div>
+    </div>
+  </section>
+  <main id="main" class="auth-side">{% block card %}{% endblock %}</main>
+</div>
+{% endblock %}

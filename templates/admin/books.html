@@ -1,0 +1,19 @@
+{% extends "app_shell.html" %}
+{% from "partials/book_card.html" import cover %}
+{% from "partials/pagination.html" import pagination %}
+{% set panel = "admin" %}
+{% block title %}Daftar buku{% endblock %}
+{% block content %}
+<div class="toolbar-admin">
+  <div><span class="kicker">Koleksi</span><h1 class="page-title">Daftar buku</h1></div>
+  <a href="/admin/buku/tambah" class="btn">+ Tambah buku</a>
+</div>
+<form class="search-inline" id="cari-form" method="get" role="search">
+  <label class="sr-only" for="q">Cari buku</label>
+  <input id="q" class="input" name="q" value="{{ q }}" placeholder="Cari judul, penulis, kode, atau ISBN" maxlength="80">
+  <button class="btn btn-ghost btn-sm" type="submit">Cari</button>
+</form>
+<div id="hasil" data-endpoint="/admin/buku">{% include "admin/_books_results.html" %}</div>
+<p class="sr-only" id="cari-status" aria-live="polite"></p>
+{% endblock %}
+{% block js %}<script src="/static/js/admin-search.js" defer></script>{% endblock %}

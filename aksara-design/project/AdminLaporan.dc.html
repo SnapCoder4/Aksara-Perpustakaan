@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Aksara Admin: Laporan dan Statistik</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>.t{--page:#F6F2E9;--paper:#F6F2E9;--card:#FFFFFF;--soft:#E6ECF5;--bd:#E2DDD0;--bd2:#C3CBDB;--ink:#0B1733;--ink2:#1E2B4A;--mut:#4A5873;--strong:#10264A;--pri:#10264A;--onpri:#FBF8F2;--link:#183E70;--gold:#8A5A0B;--ok:#0A6B3B;--warn:#8A3B12;--err:#8F2A22;--errtx:#5A3A37;--dz:#EEF2F9;--dzi:#DCE5F3;--dzb:#9FB2D0;--errbg:#FCF1EF;--erri:#F6DAD6;--errbd:#D69A93;}.t[data-theme=dark]{--page:#0B1733;--paper:#0B1733;--card:#10264A;--soft:#16305A;--bd:#1E3760;--bd2:#3A5686;--ink:#F4F1EA;--ink2:#DCE4F2;--mut:#A9B7D0;--strong:#F4F1EA;--pri:#D9B66F;--onpri:#0B1733;--link:#F2D49A;--gold:#E0B35A;--ok:#6EE0A8;--warn:#F2A06B;--err:#FF9C92;--errtx:#E8C4C0;--dz:#0F2147;--dzi:#1B3A6B;--dzb:#3A5686;--errbg:#2A1513;--erri:#4A2420;--errbd:#7A3A34;}
+body{margin:0;font-family:Inter,system-ui,sans-serif}
+a{color:var(--link);text-decoration:none}
+button{font-family:inherit;cursor:pointer}
+input,select,textarea{font-family:inherit}
+input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-visible{outline:3px solid var(--link);outline-offset:2px}
+@keyframes pop{from{opacity:0;transform:translateY(10px) scale(.98)}to{opacity:1;transform:none}}
+.md{animation:pop .25s ease both}
+@media (prefers-reduced-motion:reduce){.md{animation:none}}
+</style>
+</helmet>
+<div class="t" data-theme="{{theme}}" style="position:relative;overflow:hidden;width:100%;display:flex;flex-wrap:wrap;min-height:1250px;background:var(--page);color:var(--ink)">
+<aside aria-label="Menu admin" style="flex:0 0 250px;box-sizing:border-box;background:#10264A;color:#EAF2F0;padding:22px 14px">
+<div style="display:flex;align-items:center;gap:10px;padding:4px 8px 18px"><span style="width:36px;height:36px;border-radius:10px;background:#FBF8F2;color:#10264A;display:flex;align-items:center;justify-content:center;font-family:Fraunces,Georgia,serif;font-size:21px">A</span><span style="font-family:Fraunces,Georgia,serif;font-size:20px;font-weight:600">Admin</span></div>
+<nav style="display:flex;flex-direction:column;gap:2px">
+<sc-for list="{{menu}}" as="m" hint-placeholder-count="12">
+<sc-if value="{{m.isHead}}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#93A5C6;padding:16px 12px 6px;font-weight:600">{{m.label}}</span></sc-if>
+<sc-if value="{{m.isLink}}" hint-placeholder-val="{{ true }}"><a href="{{m.href}}" style="{{m.style}}">{{m.label}}<sc-if value="{{m.badge}}" hint-placeholder-val="{{ false }}"><span style="margin-left:auto;min-width:22px;height:22px;border-radius:99px;background:#D9B66F;color:#2A1C03;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center">{{m.badge}}</span></sc-if></a></sc-if>
+</sc-for>
+</nav>
+</aside>
+<main style="flex:999 1 640px;min-width:0;padding:28px 32px 56px;display:flex;flex-direction:column;gap:22px">
+<div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px"><div style="display:flex;flex-direction:column;gap:4px"><span style="font-size:14px;color:var(--mut)">Sistem</span><h1 style="margin:0;font-family:Fraunces,Georgia,serif;font-weight:500;font-size:34px;letter-spacing:-.01em">Laporan dan statistik</h1></div><div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center"><button type="button" onClick="{{toggleTheme}}" style="padding:10px 16px;border:1px solid var(--bd2);border-radius:999px;background:transparent;color:var(--ink);font-size:14px;font-weight:500;min-height:44px">{{themeLabel}}</button></div></div>
+<div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center"><label for="r1" style="font-size:14px;color:var(--mut)">Periode</label><select aria-label="Periode" style="padding:11px 16px;border:1px solid var(--bd2);border-radius:999px;background:var(--card);color:var(--ink);font-size:14px;min-height:44px"><option>30 hari terakhir</option><option>90 hari terakhir</option><option>Tahun ini</option></select><select aria-label="Kategori" style="padding:11px 16px;border:1px solid var(--bd2);border-radius:999px;background:var(--card);color:var(--ink);font-size:14px;min-height:44px"><option>Semua kategori</option><option>Sejarah</option><option>Sastra</option></select><span style="flex:1"></span><button type="button" style="padding:10px 18px;border:1px solid var(--bd2);border-radius:999px;background:transparent;color:var(--strong);font-size:14px;font-weight:600;min-height:44px;box-sizing:border-box;display:flex;align-items:center">Ekspor CSV</button><button type="button" style="padding:10px 20px;border:0;border-radius:999px;background:var(--pri);color:var(--onpri);font-size:14px;font-weight:600;min-height:44px;box-sizing:border-box;display:flex;align-items:center">Ekspor PDF</button></div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),1fr));gap:14px"><sc-for list="{{kpis}}" as="k" hint-placeholder-count="4"><div style="background:var(--card);border:1px solid var(--bd);border-radius:24px;padding:24px;box-sizing:border-box;padding:20px;display:flex;flex-direction:column;gap:6px"><span style="font-size:13px;color:var(--mut)">{{k.l}}</span><span style="font-family:Fraunces,Georgia,serif;font-size:34px;line-height:1.1;font-weight:500">{{k.n}}</span><span style="font-size:13px;font-weight:600;color:{{k.c}}">{{k.note}}</span></div></sc-for></div>
+<div style="display:flex;flex-wrap:wrap;gap:16px;align-items:stretch">
+<section aria-labelledby="l1" style="background:var(--card);border:1px solid var(--bd);border-radius:24px;padding:24px;box-sizing:border-box;flex:2 1 520px;min-width:0;display:flex;flex-direction:column;gap:12px"><div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px"><h2 id="l1" style="margin:0;font-family:Fraunces,Georgia,serif;font-weight:500;font-size:22px">Tren peminjaman</h2><span style="font-size:13px;color:var(--mut)">Data contoh</span></div>
+<svg viewBox="0 0 600 220" width="100%" role="img" aria-label="Grafik garis tren peminjaman 12 minggu" style="display:block"><g style="stroke:var(--bd)" stroke-width="1"><path d="M0 200H600M0 150H600M0 100H600M0 50H600"/></g><polygon points="{{line.area}}" fill="{{line.fill}}"/><polyline points="{{line.pts}}" fill="none" stroke="{{line.c}}" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/></svg>
+<div style="display:flex;justify-content:space-between;font-size:12px;color:var(--mut)"><span>Minggu 1</span><span>Minggu 6</span><span>Minggu 12</span></div></section>
+<section aria-labelledby="l2" style="background:var(--card);border:1px solid var(--bd);border-radius:24px;padding:24px;box-sizing:border-box;flex:1 1 300px;min-width:0;display:flex;flex-direction:column;gap:14px"><h2 id="l2" style="margin:0;font-family:Fraunces,Georgia,serif;font-weight:500;font-size:22px">Per kategori</h2><sc-for list="{{cats}}" as="c" hint-placeholder-count="5"><div style="display:flex;flex-direction:column;gap:6px"><span style="display:flex;justify-content:space-between;font-size:14px"><span>{{c.n}}</span><span style="font-weight:600">{{c.v}}</span></span><span style="height:8px;border-radius:99px;background:var(--bd)"><span style="display:block;height:100%;width:{{c.w}}%;border-radius:99px;background:{{c.c}}"></span></span></div></sc-for></section></div>
+<div style="display:flex;flex-wrap:wrap;gap:16px;align-items:stretch">
+<section aria-labelledby="l3" style="background:var(--card);border:1px solid var(--bd);border-radius:24px;padding:24px;box-sizing:border-box;flex:1 1 360px;min-width:0"><h2 id="l3" style="margin:0 0 8px;font-family:Fraunces,Georgia,serif;font-weight:500;font-size:22px">Anggota paling aktif</h2><div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;min-width:320px;font-size:14px"><thead><tr style="text-align:left;color:var(--mut);font-size:12px"><th style="padding:12px 8px;font-weight:600">Anggota</th><th style="padding:12px 8px;font-weight:600">Pinjaman</th><th style="padding:12px 8px;font-weight:600;text-align:right">Status</th></tr></thead><tbody><sc-for list="{{members}}" as="m" hint-placeholder-count="5"><tr style="border-top:1px solid var(--bd)"><td style="padding:12px 8px;font-weight:500">{{m.n}}</td><td style="padding:12px 8px;color:var(--mut)">{{m.k}} buku</td><td style="padding:12px 8px;text-align:right"><span style="padding:4px 12px;border-radius:99px;font-size:12px;font-weight:600;background:var(--soft);color:var(--strong)">{{m.s}}</span></td></tr></sc-for></tbody></table></div></section>
+<section aria-labelledby="l4" style="background:var(--card);border:1px solid var(--bd);border-radius:24px;padding:24px;box-sizing:border-box;flex:1 1 360px;min-width:0"><h2 id="l4" style="margin:0 0 8px;font-family:Fraunces,Georgia,serif;font-weight:500;font-size:22px">Ringkasan denda</h2><dl style="margin:0;display:grid;grid-template-columns:1fr auto;gap:12px 16px;font-size:15px"><dt style="color:var(--mut)">Total denda periode ini</dt><dd style="margin:0;font-weight:600">[RP]</dd><dt style="color:var(--mut)">Sudah dibayar</dt><dd style="margin:0;font-weight:600;color:var(--ok)">[RP]</dd><dt style="color:var(--mut)">Belum dibayar</dt><dd style="margin:0;font-weight:600;color:var(--err)">[RP]</dd><dt style="color:var(--mut)">Anggota berdenda</dt><dd style="margin:0;font-weight:600">12</dd></dl></section></div>
+</main>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1360,"height":1250}}'>
+class Component extends DCLogic {
+constructor(props){ super(props); this.state = Object.assign({ theme:'dark' }, {}); }
+renderVals() {
+const th = this.state.theme, dk = th==='dark', S = this.state;
+const chip = (p) => `padding:4px 12px;border-radius:99px;font-size:12px;font-weight:600;background:${p[0]};color:${p[1]};white-space:nowrap;`;
+const ok = dk ? ['#12382F','#6EE0C3'] : ['#DDF0E4','#07522C'];
+const wr = dk ? ['#3D2A12','#F2B24C'] : ['#FBEBC8','#5C3A05'];
+const er = dk ? ['#3D1A17','#FF9C92'] : ['#F6DAD6','#7A1F18'];
+const nt = dk ? ['#16305A','#D8E1F0'] : ['#DDEBE8','#10264A'];
+const pal = [['#183E70','#FBF8F2'],['#B7791F','#1B1206'],['#243B5A','#FBF8F2'],['#7A2E2B','#FBF8F2'],['#DCE5F3','#0B1733']];
+const cv = (i,w,h,extra) => `background:${pal[i%5][0]};color:${pal[i%5][1]};border-radius:4px 8px 8px 4px;box-shadow:inset 4px 0 0 rgba(0,0,0,.16);width:${w};height:${h};flex:none;box-sizing:border-box;${extra||''}`;
+const MENU = [['h','Utama'],['l','Dashboard','AdminDashboard.dc.html'],['h','Katalog'],['l','Manajemen Buku','AdminBuku.dc.html'],['l','Manajemen Kategori','AdminKategori.dc.html'],['h','Sirkulasi'],['l','Peminjaman','AdminPeminjaman.dc.html'],['l','Pengembalian','AdminPeminjaman.dc.html'],['l','Denda','AdminPeminjaman.dc.html'],['h','Komunitas'],['l','Manajemen Anggota','AdminAnggota.dc.html'],['h','Sistem'],['l','Laporan dan Statistik','AdminLaporan.dc.html'],['l','Pengaturan Website','AdminPengaturan.dc.html']];
+const menu = MENU.map(m => m[0]==='h' ? { isHead:true, isLink:false, label:m[1], href:'' } : { isHead:false, isLink:true, label:m[1], href:m[2], badge:m[4]||'', style:`display:flex;align-items:center;gap:8px;padding:11px 12px;border-radius:10px;min-height:44px;box-sizing:border-box;font-size:14px;color:#EAF2F0;background:${m[1]==='Laporan dan Statistik'?'rgba(255,255,255,.14)':'transparent'};font-weight:${m[1]==='Laporan dan Statistik'?600:400}` });
+return Object.assign({ theme: th, toggleTheme: () => this.setState({ theme: dk?'light':'dark' }), themeLabel: dk?'Mode terang':'Mode gelap', menu }, (() => { const v=[40,48,44,56,52,66,60,74,70,84,80,96];
+const pts=v.map((y,i)=>`${i*54.5},${200-y*1.7}`).join(' ');
+return { kpis:[{l:'Total peminjaman',n:'428',note:'+12% dari periode lalu',c:'var(--ok)'},{l:'Total pengembalian',n:'391',note:'+8%',c:'var(--ok)'},{l:'Keterlambatan',n:'37',note:'-5%',c:'var(--ok)'},{l:'Anggota baru',n:'41',note:'+6%',c:'var(--ok)'}],
+ line:{pts, area:pts+' 600,200 0,200', c:dk?'#D9B66F':'#183E70', fill:dk?'rgba(217,182,111,.14)':'rgba(14,75,74,.1)'},
+ cats:[['Sejarah',167,100],['Sastra',138,83],['Sains',84,50],['Teknologi',72,43],['Ekonomi',41,25]].map((c,i)=>({n:c[0],v:c[1],w:c[2],c:dk?['#D9B66F','#6AA7FF','#F2B24C','#B79CFF','#8FA9A5'][i]:['#183E70','#7F9CC8','#D98A1E','#7A2E2B','#243B5A'][i]})),
+ members:[['Nadia Putri',14,'Aktif'],['Rudi Santoso',11,'Aktif'],['Maya Lestari',9,'Aktif'],['Hendra Lubis',8,'Aktif'],['Dewi Anggraini',7,'Aktif']].map(m=>({n:m[0],k:m[1],s:m[2]})) }; })());
+}
+}
+</script>
+</body>
+</html>

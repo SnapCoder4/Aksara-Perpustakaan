@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% from "partials/book_card.html" import cover, book_card %}
+{% block title %}{{ book.judul }}{% endblock %}
+{% block description %}{{ (book.sinopsis or book.judul ~ " oleh " ~ book.penulis)[:150] }}{% endblock %}
+{% block css %}<link rel="stylesheet" href="/static/css/pages/public.css">{% endblock %}
+{% block content %}
+{% set av = availability(book) %}
+<div class="wrap">
+  <nav class="muted" style="font-size:14px;padding-top:24px" aria-label="Jejak halaman"><a href="/katalog">Katalog</a> / {{ book.category.nama if book.category else "Buku" }}</nav>
+  <article class="detail">
+    <div class="rv">{{ cover(book) }}</div>
+    <div class="rv" style="animation-delay:.1s">
+      <span class="kicker">{{ book.category.nama if book.category else "Buku" }}</span>
+      <h1>{{ book.judul }}</h1>
+      <p style="font-size:18px" class="muted">oleh {{ book.penulis }}</p>
+      <div style="margin-top:16px"><span class="chip {{ 'chip-ok' if av[1] == 'ok' else 'chip-warn' }}">{{ av[0] }}{% if book.stok > 0 %} eksemplar{% endif %}</span></div>
+
+      <dl class="meta-grid">
+        <div><dt>Penerbit</dt><dd>{{ book.penerbit or "-" }}</dd></div>
+        <div><dt>ISBN</dt><dd>{{ book.isbn or "-" }}</dd></div>
+        <div><dt>Tahun terbit</dt><dd>{{ book.tahun or "-" }}</dd></div>
+        <div><dt>Kode buku</dt><dd>{{ book.kode_buku }}</dd></div>
+      </dl>
+
+      <h2 class="h3" style="margin-bottom:12px">Sinopsis</h2>
+      <p class="synopsis">{{ book.sinopsis or "Sinopsis belum tersedia." }}</p>
+
+      <div class="row wrap-flex gap-12" style="margin-top:32px">
+        {% if user and user.role == "admin" %}
+          <a class="btn" href="/admin/buku/{{ book.kode_buku }}/edit">Edit buku</a>
+        {% else %}
+          <form method="post" action="/buku/{{ book.kode_buku }}/pinjam" data-confirm="Pinjam &quot;{{ book.judul }}&quot;?">
+            <button class="btn" type="submit" {{ "disabled" if book.stok <= 0 }}>{{ "Pinjam buku ini" if book.stok > 0 else "Stok habis" }}</button>
+          </form>
+          {% if user %}
+          <form method="post" action="/buku/{{ book.kode_buku }}/wishlist">
+            <button class="btn btn-ghost" type="submit" aria-pressed="{{ 'true' if wished else 'false' }}">{{ "♥ Di wishlist" if wished else "♡ Simpan ke wishlist" }}</button>
+          </form>
+          {% else %}<a href="/login?next=/buku/{{ book.kode_buku }}" class="muted" style="font-size:14px">Masuk untuk meminjam</a>{% endif %}
+        {% endif %}
+      </div>
+    </div>
+  </article>
+
+  {% if related %}
+  <section class="section" style="padding-top:56px">
+    <h2 class="h2" style="font-size:30px;margin-bottom:28px">Buku terkait</h2>
+    <div class="grid-books">{% for b in related %}{{ book_card(b) }}{% endfor %}</div>
+  </section>
+  {% endif %}
+</div>
+{% endblock %}

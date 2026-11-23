@@ -1,0 +1,37 @@
+{# Sampul: foto bila ada, kalau tidak placeholder gradasi dengan judul. size: "", "sm", "xs" #}
+{% macro cover(b, size="", tag=true) -%}
+<div class="cover cv-{{ b.judul|length % 6 }} {{ size }}">
+  {%- if b.cover_path -%}
+    <img src="/static/uploads/covers/{{ b.cover_path }}" alt="Sampul {{ b.judul }}" loading="lazy">
+  {%- else -%}
+    <span class="ct">{{ b.category.nama if b.category else "Buku" }}</span>
+    <span class="cn">{{ b.judul }}</span>
+    <span class="ca">{{ b.penulis }}</span>
+  {%- endif -%}
+</div>
+{%- endmacro %}
+
+{% macro book_card(b) -%}
+{% set av = availability(b) %}
+<a href="/buku/{{ b.kode_buku }}" class="book-card" data-reveal>
+  {{ cover(b) }}
+  <span class="stack" style="gap:3px">
+    <span class="t">{{ b.judul }}</span>
+    <span class="a">{{ b.penulis }}{% if b.tahun %} · {{ b.tahun }}{% endif %}</span>
+    <span class="avail {{ av[1] }}">{{ av[0] }}</span>
+  </span>
+</a>
+{%- endmacro %}
+
+{% macro book_row(b) -%}
+{% set av = availability(b) %}
+<a href="/buku/{{ b.kode_buku }}" class="book-row">
+  {{ cover(b, "sm") }}
+  <span class="meta">
+    <span style="font-weight:600;font-size:16px">{{ b.judul }}</span>
+    <span class="muted" style="font-size:14px">{{ b.penulis }}{% if b.tahun %} · {{ b.tahun }}{% endif %}{% if b.penerbit %} · {{ b.penerbit }}{% endif %}</span>
+  </span>
+  <span class="muted hide-m" style="font-size:13px">{{ b.category.nama if b.category else "" }}</span>
+  <span class="avail {{ av[1] }}">{{ av[0] }}</span>
+</a>
+{%- endmacro %}

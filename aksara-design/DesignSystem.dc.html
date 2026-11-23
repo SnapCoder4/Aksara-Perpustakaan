@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Aksara: Design System</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#FBF8F2;font-family:Inter,system-ui,sans-serif;color:#14201F}
+a{color:#183E70;text-decoration:none}
+button{font-family:inherit;cursor:pointer}
+@keyframes shim{from{background-position:200% 0}to{background-position:-200% 0}}
+.sk{background:linear-gradient(90deg,#EFEADF 25%,#F7F3EA 50%,#EFEADF 75%);background-size:200% 100%;animation:shim 1.6s linear infinite;border-radius:10px}
+@media (prefers-reduced-motion:reduce){.sk{animation:none}}
+</style>
+</helmet>
+<div style="width:100%;background:#FBF8F2">
+<div style="max-width:1200px;margin:0 auto;padding:56px 40px 80px;display:flex;flex-direction:column;gap:64px">
+
+<header style="display:flex;flex-direction:column;gap:12px">
+<span style="font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#8A5A0B;font-weight:600">Design system</span>
+<h1 style="margin:0;font-family:Fraunces,Georgia,serif;font-weight:500;font-size:56px;letter-spacing:-.02em">Aksara</h1>
+<p style="margin:0;font-size:18px;line-height:1.6;color:#4F5B59;max-width:680px">Arah visual: institusional premium. Navy tengah malam sebagai dasar, emas champagne sebagai aksen hemat, ivory untuk mode terang, dan huruf serif untuk judul supaya terasa seperti perpustakaan nasional, bukan dasbor generik. Tampilan awal memakai mode gelap navy, mode terang tersedia lewat tombol di setiap halaman.</p>
+</header>
+
+<section style="display:flex;flex-direction:column;gap:20px">
+<h2 style="margin:0;font-family:Fraunces,Georgia,serif;font-weight:500;font-size:30px">Warna</h2>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(160px,100%),1fr));gap:14px">
+<sc-for list="{{colors}}" as="c" hint-placeholder-count="8">
+<div style="border:1px solid #E4DED2;border-radius:16px;overflow:hidden;background:#fff">
+<div style="height:84px;background:{{c.hex}}"></div>
+<div style="padding:12px 14px;display:flex;flex-direction:column;gap:2px"><span style="font-weight:600;font-size:14px">{{c.n}}</span><span style="font-size:13px;color:#4F5B59">{{c.hex}}</span><span style="font-size:12px;color:#4F5B59">{{c.use}}</span></div>
+</div>
+</sc-for>
+</div>
+</section>
+
+<section style="display:flex;flex-direction:column;gap:20px">
+<h2 style="margin:0;font-family:Fraunces,Georgia,serif;font-weight:500;font-size:30px">Tipografi</h2>
+<div style="background:#fff;border:1px solid #E4DED2;border-radius:24px;padding:32px;display:flex;flex-direction:column;gap:22px">
+<div style="display:flex;flex-wrap:wrap;gap:16px;align-items:baseline;justify-content:space-between"><span style="font-family:Fraunces,Georgia,serif;font-size:56px;font-weight:500;letter-spacing:-.02em;line-height:1">Display 56</span><span style="font-size:13px;color:#4F5B59">Fraunces 500, hero</span></div>
+<div style="display:flex;flex-wrap:wrap;gap:16px;align-items:baseline;justify-content:space-between"><span style="font-family:Fraunces,Georgia,serif;font-size:38px;font-weight:500;line-height:1.1">Judul bagian 38</span><span style="font-size:13px;color:#4F5B59">Fraunces 500, H2</span></div>
+<div style="display:flex;flex-wrap:wrap;gap:16px;align-items:baseline;justify-content:space-between"><span style="font-family:Fraunces,Georgia,serif;font-size:24px;font-weight:500">Judul kartu 24</span><span style="font-size:13px;color:#4F5B59">Fraunces 500, H3</span></div>
+<div style="display:flex;flex-wrap:wrap;gap:16px;align-items:baseline;justify-content:space-between"><span style="font-size:17px;line-height:1.6;max-width:560px">Teks isi 17. Inter 400, tinggi baris 1,6, dipakai untuk sinopsis dan deskripsi.</span><span style="font-size:13px;color:#4F5B59">Inter 400, body</span></div>
+<div style="display:flex;flex-wrap:wrap;gap:16px;align-items:baseline;justify-content:space-between"><span style="font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#8A5A0B;font-weight:600">Label 13</span><span style="font-size:13px;color:#4F5B59">Inter 600, huruf kapital</span></div>
+</div>
+</section>
+
+<section style="display:flex;flex-direction:column;gap:20px">
+<h2 style="margin:0;font-family:Fraunces,Georgia,serif;font-weight:500;font-size:30px">Komponen</h2>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(340px,100%),1fr));gap:20px">
+<div style="background:#fff;border:1px solid #E4DED2;border-radius:24px;padding:28px;display:flex;flex-direction:column;gap:16px">
+<span style="font-weight:600">Tombol</span>
+<div style="display:flex;flex-wrap:wrap;gap:10px">
+<button type="button" style="padding:13px 24px;border:0;border-radius:999px;background:#183E70;color:#FBF8F2;font-size:15px;font-weight:600;min-height:48px">Utama</button>
+<button type="button" style="padding:13px 24px;border:1px solid #CFC8B8;border-radius:999px;background:transparent;color:#10264A;font-size:15px;font-weight:500;min-height:48px">Sekunder</button>
+<button type="button" style="padding:13px 24px;border:0;border-radius:999px;background:#8F2A22;color:#fff;font-size:15px;font-weight:600;min-height:48px">Hapus</button>
+</div>
+<span style="font-size:13px;color:#4F5B59">Radius penuh, tinggi minimal 48px. Mode terang: navy dengan teks ivory. Mode gelap: emas champagne dengan teks navy. Hover: naik 1px.</span>
+</div>
+<div style="background:#fff;border:1px solid #E4DED2;border-radius:24px;padding:28px;display:flex;flex-direction:column;gap:12px">
+<span style="font-weight:600">Input</span>
+<label for="x1" style="font-size:14px;font-weight:600">Label</label>
+<input id="x1" placeholder="Placeholder" style="padding:14px 16px;border:1px solid #CFC8B8;border-radius:12px;font-size:16px;background:#FBF8F2;min-height:48px;box-sizing:border-box;font-family:inherit">
+<span style="font-size:13px;color:#8F2A22">Contoh pesan galat di bawah input.</span>
+</div>
+<div style="background:#fff;border:1px solid #E4DED2;border-radius:24px;padding:28px;display:flex;flex-direction:column;gap:14px">
+<span style="font-weight:600">Kartu buku</span>
+<div style="display:flex;gap:16px;align-items:center">
+<div style="width:72px;height:100px;border-radius:5px 10px 10px 5px;background:#183E70;box-shadow:inset 5px 0 0 rgba(0,0,0,.16);flex:none"></div>
+<div style="display:flex;flex-direction:column;gap:4px"><span style="font-weight:600">Judul buku</span><span style="font-size:14px;color:#4F5B59">Penulis · 2024</span><span style="font-size:13px;font-weight:600;color:#0A6B3B">Tersedia 4</span></div>
+</div>
+<span style="font-size:13px;color:#4F5B59">Hover: naik 6px, bayangan melebar. Punggung buku digambar dengan bayangan dalam.</span>
+</div>
+</div>
+</section>
+
+<section style="display:flex;flex-direction:column;gap:20px">
+<h2 style="margin:0;font-family:Fraunces,Georgia,serif;font-weight:500;font-size:30px">Status antarmuka</h2>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(250px,100%),1fr));gap:16px">
+<div style="background:#fff;border:1px solid #E4DED2;border-radius:20px;padding:22px;display:flex;flex-direction:column;gap:12px"><span style="font-weight:600">Memuat</span><div class="sk" style="height:120px"></div><div class="sk" style="height:14px;width:70%"></div><div class="sk" style="height:12px;width:45%"></div></div>
+<div style="background:#fff;border:1px solid #E4DED2;border-radius:20px;padding:22px;display:flex;flex-direction:column;gap:8px;justify-content:center"><span style="font-weight:600">Kosong</span><span style="font-family:Fraunces,Georgia,serif;font-size:20px">Belum ada buku di wishlist.</span><span style="font-size:14px;color:#4F5B59">Tombol ajakan: Jelajahi katalog.</span></div>
+<div style="background:#FCF1EF;border:1px solid #E3B8B4;border-radius:20px;padding:22px;display:flex;flex-direction:column;gap:8px;justify-content:center"><span style="font-weight:600;color:#8F2A22">Galat</span><span style="font-size:15px;color:#5A3A37">Gagal memuat data. Coba lagi.</span></div>
+<div style="background:#DDF0E4;border:1px solid #9FCFB1;border-radius:20px;padding:22px;display:flex;flex-direction:column;gap:8px;justify-content:center"><span style="font-weight:600;color:#07522C">Berhasil</span><span style="font-size:15px;color:#07522C">Buku berhasil dipinjam. Toast muncul 4 detik di kanan bawah.</span></div>
+</div>
+</section>
+
+<section style="display:flex;flex-direction:column;gap:20px">
+<h2 style="margin:0;font-family:Fraunces,Georgia,serif;font-weight:500;font-size:30px">Animasi dan interaksi</h2>
+<div style="background:#fff;border:1px solid #E4DED2;border-radius:24px;padding:28px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr));gap:14px 32px;font-size:15px;line-height:1.55;color:#2B3836">
+<span><b>Muncul saat scroll:</b> naik 14px sambil memudar, 0,7 detik, sekali saja.</span>
+<span><b>Kartu buku:</b> hover naik 6 sampai 8px, 0,3 detik.</span>
+<span><b>Angka statistik:</b> hitung naik saat terlihat di layar.</span>
+<span><b>Navbar:</b> latar menebal setelah scroll 40px.</span>
+<span><b>Dropdown dan modal:</b> fade dan geser 8px, 0,25 detik.</span>
+<span><b>Sidebar admin:</b> lebar berubah 0,3 detik saat dilipat.</span>
+<span><b>Memuat:</b> skeleton berkilau, bukan spinner penuh halaman.</span>
+<span><b>Aksesibilitas:</b> semua animasi mati bila prefers-reduced-motion aktif.</span>
+</div>
+</section>
+
+<section style="display:flex;flex-direction:column;gap:20px">
+<h2 style="margin:0;font-family:Fraunces,Georgia,serif;font-weight:500;font-size:30px">Sitemap dan alur</h2>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr));gap:16px">
+<div style="background:#fff;border:1px solid #E4DED2;border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:8px"><span style="font-weight:600">Publik</span><span style="font-size:15px;line-height:1.7;color:#2B3836">Beranda, Katalog, Kategori, Populer, Terbaru, Koleksi Digital, Tentang, Masuk dan Daftar</span></div>
+<div style="background:#fff;border:1px solid #E4DED2;border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:8px"><span style="font-weight:600">Anggota</span><span style="font-size:15px;line-height:1.7;color:#2B3836">Dashboard, Sedang dipinjam, Riwayat pinjam, Riwayat kembali, Wishlist, Notifikasi, Profil, Pengaturan</span></div>
+<div style="background:#fff;border:1px solid #E4DED2;border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:8px"><span style="font-weight:600">Admin</span><span style="font-size:15px;line-height:1.7;color:#2B3836">Dashboard, Buku, Kategori, Anggota, Peminjaman, Pengembalian, Denda, Laporan, Pengaturan</span></div>
+<div style="background:#E9F0EE;border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:8px"><span style="font-weight:600">Alur anggota</span><span style="font-size:15px;line-height:1.7;color:#2B3836">Beranda, cari, katalog, detail buku, masuk bila belum, konfirmasi pinjam, dashboard anggota</span></div>
+<div style="background:#E9F0EE;border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:8px"><span style="font-weight:600">Alur admin: tambah buku</span><span style="font-size:15px;line-height:1.7;color:#2B3836">Manajemen Buku, Tambah buku, isi data, upload cover dan pratinjau, simpan, cover tampil di katalog dan detail</span></div>
+<div style="background:#E9F0EE;border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:8px"><span style="font-weight:600">Struktur template (Jinja2)</span><span style="font-size:15px;line-height:1.7;color:#2B3836">base.html, partials: navbar, footer, book_card, upload_cover, toast. Halaman: home, catalog, book_detail, auth, dashboard, admin/*</span></div>
+</div>
+</section>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1360,"height":1900}}'>
+class Component extends DCLogic {
+renderVals() {
+return { colors: [['Midnight Navy','#0B1733','Latar mode gelap, teks mode terang'],['Deep Navy','#10264A','Kartu gelap, sidebar, tombol mode terang'],['Royal Blue','#183E70','Tautan mode terang, sampul, pita ajakan'],['Champagne Gold','#D9B66F','Tombol utama mode gelap'],['Warm Gold','#F2D49A','Tautan dan judul aksen mode gelap'],['Gold teks','#8A5A0B','Label kecil di atas ivory'],['Ivory','#F6F2E9','Latar mode terang'],['Slate biru','#4A5873','Teks sekunder mode terang'],['Mist','#A9B7D0','Teks sekunder mode gelap'],['Ivory teks','#F4F1EA','Teks utama mode gelap']].map(c => ({ n:c[0], hex:c[1], use:c[2] })) };
+}
+}
+</script>
+</body>
+</html>

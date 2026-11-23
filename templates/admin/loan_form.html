@@ -1,0 +1,22 @@
+{% extends "app_shell.html" %}
+{% set panel = "admin" %}
+{% block title %}Catat peminjaman{% endblock %}
+{% block content %}
+<div><span class="kicker">Sirkulasi</span><h1 class="page-title">Catat peminjaman</h1></div>
+<form method="post" class="card form-card" style="max-width:640px">
+  <div class="stack gap-16">
+    <div class="field"><label for="kode_buku">Buku</label>
+      <select class="select" id="kode_buku" name="kode_buku" required>
+        <option value="">Pilih buku (stok tersedia)</option>
+        {% for b in books %}<option value="{{ b.kode_buku }}">{{ b.kode_buku }} - {{ b.judul }} (stok {{ b.stok }})</option>{% endfor %}
+      </select></div>
+    <div class="field"><label for="id_member">Anggota</label>
+      <select class="select" id="id_member" name="id_member" required>
+        <option value="">Pilih anggota aktif</option>
+        {% for m in members %}<option value="{{ m.id_member }}">{{ m.id_member }} - {{ m.nama }}</option>{% endfor %}
+      </select></div>
+    <div class="field"><label for="tanggal_pinjam">Tanggal pinjam</label><input class="input" type="date" id="tanggal_pinjam" name="tanggal_pinjam" value="{{ today }}" required><span class="hint">Batas kembali dihitung otomatis dari pengaturan masa pinjam.</span></div>
+  </div>
+  <div class="row gap-12 wrap-flex" style="margin-top:24px"><button class="btn" type="submit" data-loading-btn><span class="spin"></span>Simpan</button><a class="btn btn-ghost" href="/admin/peminjaman">Batal</a></div>
+</form>
+{% endblock %}

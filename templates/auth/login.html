@@ -1,0 +1,38 @@
+{% extends "auth/_layout.html" %}
+{% block title %}Masuk{% endblock %}
+{% block card %}
+<div class="glass{{ ' shake' if error }}">
+  <div class="stack" style="gap:6px">
+    <h2>Masuk ke Akun</h2>
+    <span class="sub">Satu pintu untuk anggota dan petugas perpustakaan.</span>
+  </div>
+
+  {% if error %}<div class="alert" role="alert">{{ error }}</div>{% endif %}
+
+  <form method="post" action="/login" data-validate novalidate>
+    <input type="hidden" name="next" value="{{ next }}">
+    <div class="stack" style="gap:6px">
+      <label for="identifier" style="font-size:14px;font-weight:600">Email, nomor anggota, atau username</label>
+      <div class="fld">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0116 0"/></svg>
+        <input id="identifier" name="identifier" value="{{ identifier }}" required autocomplete="username" placeholder="Email, nomor anggota, atau username" maxlength="120">
+      </div>
+      <span class="field-error" role="alert" data-err hidden>Email, nomor anggota, atau username wajib diisi.</span>
+    </div>
+    <div class="stack" style="gap:6px">
+      <label for="password" style="font-size:14px;font-weight:600">Kata sandi</label>
+      <div class="fld">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg>
+        <input id="password" name="password" type="password" required autocomplete="current-password" placeholder="Masukkan kata sandi" maxlength="72">
+        <button type="button" data-toggle-pw="#password" aria-label="Tampilkan kata sandi" aria-pressed="false">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
+        </button>
+      </div>
+      <span class="field-error" role="alert" data-err hidden>Kata sandi wajib diisi.</span>
+    </div>
+    <button type="submit" class="btn cta-btn btn-block" data-loading-btn><span class="spin" aria-hidden="true"></span>Masuk</button>
+  </form>
+
+  <span class="alt">Anggota baru? <a href="/register" style="font-weight:700">Daftar sekarang</a></span>
+</div>
+{% endblock %}

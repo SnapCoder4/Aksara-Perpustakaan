@@ -1,0 +1,2 @@
+# Opsional: aktifkan fitur hapus latar di Admin > Gambar hero. Aplikasi berjalan normal tanpa ini.
+rembg[cpu]

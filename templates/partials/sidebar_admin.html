@@ -1,0 +1,27 @@
+{% from "partials/icons.html" import icon %}
+{% macro item(key, href, ic, label) %}
+<a href="{{ href }}" class="side-link{% if active_menu == key %} on{% endif %}"{% if active_menu == key %} aria-current="page"{% endif %} title="{{ label }}">{{ icon(ic) }}<span>{{ label }}</span></a>
+{% endmacro %}
+<span class="side-head">Utama</span>
+{{ item("dashboard", "/admin", "dash", "Dashboard") }}
+<span class="side-head">Koleksi</span>
+{{ item("buku", "/admin/buku", "book", "Buku") }}
+{{ item("kategori", "/admin/kategori", "tag", "Kategori") }}
+{{ item("hero", "/admin/hero", "dash", "Gambar hero") }}
+<span class="side-head">Sirkulasi</span>
+{{ item("anggota", "/admin/anggota", "users", "Anggota") }}
+{{ item("peminjaman", "/admin/peminjaman", "loan", "Peminjaman") }}
+{% if active_menu == "peminjaman" %}
+<div class="side-sub">
+  <a href="/admin/peminjaman" class="side-link{% if not request.query_params.get('status') %} on{% endif %}"><span>Semua transaksi</span></a>
+  <a href="/admin/peminjaman?status=Terlambat" class="side-link{% if request.query_params.get('status') == 'Terlambat' %} on{% endif %}"><span>Terlambat dan denda</span></a>
+  <a href="/admin/peminjaman?status=Dikembalikan" class="side-link{% if request.query_params.get('status') == 'Dikembalikan' %} on{% endif %}"><span>Pengembalian</span></a>
+</div>
+{% endif %}
+<span class="side-head">Sistem</span>
+{{ item("laporan", "/admin/laporan", "chart", "Laporan") }}
+{{ item("pengaturan", "/admin/pengaturan", "cog", "Pengaturan") }}
+<div class="side-foot">
+  <a href="/" class="side-link" title="Lihat situs">{{ icon("globe") }}<span>Lihat situs</span></a>
+  <form method="post" action="/logout"><button type="submit" class="side-link" style="width:100%;background:none;border:0;text-align:left" title="Keluar">{{ icon("out") }}<span>Keluar</span></button></form>
+</div>

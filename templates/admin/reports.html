@@ -1,0 +1,48 @@
+{% extends "app_shell.html" %}
+{% set panel = "admin" %}
+{% block title %}Laporan{% endblock %}
+{% block content %}
+<div class="toolbar-admin">
+  <div><span class="kicker">Sistem</span><h1 class="page-title">Laporan</h1></div>
+  <div class="row gap-8 wrap-flex no-print">
+    <a class="btn btn-ghost btn-sm" href="/admin/laporan.csv?dari={{ dari }}&sampai={{ sampai }}">Unduh CSV</a>
+    <button class="btn btn-sm" type="button" onclick="window.print()">Cetak</button>
+  </div>
+</div>
+<form method="get" class="card row wrap-flex gap-12 no-print" style="align-items:end">
+  <div class="field"><label for="dari">Dari</label><input class="input" type="date" id="dari" name="dari" value="{{ dari }}"></div>
+  <div class="field"><label for="sampai">Sampai</label><input class="input" type="date" id="sampai" name="sampai" value="{{ sampai }}"></div>
+  <button class="btn" type="submit">Terapkan</button>
+</form>
+<p class="muted">Periode {{ dari|tgl }} sampai {{ sampai|tgl }}</p>
+
+<div class="grid-stats" style="grid-template-columns:repeat(3,minmax(0,1fr))">
+  <div class="card stat"><span class="l">Peminjaman</span><span class="n">{{ n_out }}</span></div>
+  <div class="card stat"><span class="l">Pengembalian</span><span class="n">{{ n_ret }}</span></div>
+  <div class="card stat"><span class="l">Denda terkumpul</span><span class="n" style="font-size:28px">{{ fines|rupiah }}</span></div>
+</div>
+
+<div class="split">
+  <section class="card main-col">
+    <h2 style="margin-bottom:12px">Buku paling sering dipinjam</h2>
+    {% for judul, penulis, n in top_books %}<div class="list-item"><span class="info"><b>{{ judul }}</b><span>{{ penulis }}</span></span><span class="chip">{{ n }}x</span></div>
+    {% else %}<div class="empty">Tidak ada data pada periode ini.</div>{% endfor %}
+  </section>
+  <section class="card side-col">
+    <h2 style="margin-bottom:12px">Anggota paling aktif</h2>
+    {% for nama, idm, n in top_members %}<div class="list-item"><span class="info"><b>{{ nama }}</b><span>{{ idm }}</span></span><span class="chip">{{ n }}x</span></div>
+    {% else %}<div class="empty">Tidak ada data pada periode ini.</div>{% endfor %}
+  </section>
+</div>
+
+<section class="card">
+  <h2 style="margin-bottom:12px">Keterlambatan saat ini</h2>
+  <div class="table-wrap"><table class="table">
+    <thead><tr><th>Anggota</th><th>Buku</th><th>Batas kembali</th><th class="num">Denda berjalan</th></tr></thead>
+    <tbody>
+    {% for l in overdue %}<tr><td>{{ l.member.nama if l.member else l.id_member }}</td><td>{{ l.book.judul if l.book else l.kode_buku }}</td><td>{{ l.jatuh_tempo|tgl }}</td><td class="num">{{ fine_for(l, settings.fine_per_day)|rupiah }}</td></tr>
+    {% else %}<tr><td colspan="4"><div class="empty">Tidak ada keterlambatan.</div></td></tr>{% endfor %}
+    </tbody>
+  </table></div>
+</section>
+{% endblock %}

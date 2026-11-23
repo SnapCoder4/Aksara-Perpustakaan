@@ -1,0 +1,39 @@
+{% set q = request.query_params %}
+{% macro link(href, label, on) %}<a href="{{ href }}"{% if on %} class="on" aria-current="page"{% endif %}>{{ label }}</a>{% endmacro %}
+<header class="navbar">
+  <div class="wrap">
+    <a href="/" class="brand" aria-label="Aksara, ke beranda">
+      <img class="logo" src="/static/img/logo-aksara.svg" alt="Aksara" width="40" height="40">
+      <span class="brand-text"><span class="name">Aksara</span><span class="sub">Perpustakaan digital</span></span>
+    </a>
+    <nav class="nav-links" aria-label="Navigasi utama">
+      {{ link("/", "Beranda", path == "/") }}
+      {{ link("/katalog", "Katalog", path == "/katalog" and not q.get("urut") and not q.get("kategori")) }}
+      {{ link("/katalog?urut=populer", "Populer", q.get("urut") == "populer") }}
+      {{ link("/katalog?urut=terbaru", "Terbaru", path == "/katalog" and q.get("urut") == "terbaru") }}
+      {{ link("/tentang", "Tentang", path == "/tentang") }}
+    </nav>
+    <div class="nav-actions">
+      <button type="button" class="theme-btn hide-m" data-theme-toggle aria-pressed="true">Mode terang</button>
+      {% if user %}
+        <div class="dropdown" data-dropdown>
+          <button type="button" class="btn btn-ghost btn-sm" data-dropdown-btn aria-haspopup="true" aria-expanded="false">{{ user.name.split(" ")[0] }} ▾</button>
+          <div class="dropdown-menu" role="menu">
+            {% if user.role == "admin" %}
+              <a href="/admin" role="menuitem">Panel admin</a>
+            {% else %}
+              <a href="/akun" role="menuitem">Dashboard saya</a>
+              <a href="/akun/riwayat" role="menuitem">Riwayat pinjam</a>
+              <a href="/akun/profil" role="menuitem">Profil</a>
+            {% endif %}
+            <form method="post" action="/logout"><button type="submit" role="menuitem">Keluar</button></form>
+          </div>
+        </div>
+      {% else %}
+        <a href="/login" class="btn btn-ghost btn-sm hide-m" style="border-color:transparent">Masuk</a>
+        <a href="/register" class="btn btn-sm">Daftar</a>
+      {% endif %}
+      <button type="button" class="burger" data-nav-toggle aria-label="Buka menu" aria-expanded="false">☰</button>
+    </div>
+  </div>
+</header>

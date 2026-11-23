@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Aksara: Tentang Perpustakaan</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>.t{--page:#F6F2E9;--paper:#F6F2E9;--card:#FFFFFF;--soft:#E6ECF5;--bd:#E2DDD0;--bd2:#C3CBDB;--ink:#0B1733;--ink2:#1E2B4A;--mut:#4A5873;--strong:#10264A;--pri:#10264A;--onpri:#FBF8F2;--link:#183E70;--gold:#8A5A0B;--ok:#0A6B3B;--warn:#8A3B12;--err:#8F2A22;--errtx:#5A3A37;--dz:#EEF2F9;--dzi:#DCE5F3;--dzb:#9FB2D0;--errbg:#FCF1EF;--erri:#F6DAD6;--errbd:#D69A93;}.t[data-theme=dark]{--page:#0B1733;--paper:#0B1733;--card:#10264A;--soft:#16305A;--bd:#1E3760;--bd2:#3A5686;--ink:#F4F1EA;--ink2:#DCE4F2;--mut:#A9B7D0;--strong:#F4F1EA;--pri:#D9B66F;--onpri:#0B1733;--link:#F2D49A;--gold:#E0B35A;--ok:#6EE0A8;--warn:#F2A06B;--err:#FF9C92;--errtx:#E8C4C0;--dz:#0F2147;--dzi:#1B3A6B;--dzb:#3A5686;--errbg:#2A1513;--erri:#4A2420;--errbd:#7A3A34;}
+body{margin:0;font-family:Inter,system-ui,sans-serif}
+a{color:var(--link);text-decoration:none}
+button{font-family:inherit;cursor:pointer}
+input,select,textarea{font-family:inherit}
+input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-visible{outline:3px solid var(--link);outline-offset:2px}
+@keyframes pop{from{opacity:0;transform:translateY(10px) scale(.98)}to{opacity:1;transform:none}}
+.md{animation:pop .25s ease both}
+@media (prefers-reduced-motion:reduce){.md{animation:none}}
+</style>
+</helmet>
+<div class="t" data-theme="{{theme}}" style="position:relative;overflow:hidden;width:100%;min-height:1900px;background:var(--page);color:var(--ink)">
+<!-- Navbar -->
+<header style="max-width:1200px;margin:0 auto;padding:22px 40px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px">
+<a href="Main.dc.html" style="display:flex;align-items:center;gap:12px;color:var(--ink)">
+<span style="width:40px;height:40px;border-radius:12px;background:var(--pri);color:var(--onpri);display:flex;align-items:center;justify-content:center;font-family:Fraunces,Georgia,serif;font-size:24px">A</span>
+<span style="font-family:Fraunces,Georgia,serif;font-size:22px;font-weight:600">Aksara</span>
+</a>
+<nav aria-label="Navigasi utama" style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+<a href="Main.dc.html" style="padding:10px 14px;font-size:15px;color:var(--ink2)">Beranda</a>
+<a href="Katalog.dc.html" style="padding:10px 14px;font-size:15px;color:var(--ink2)">Katalog</a>
+<a href="Katalog.dc.html" style="padding:10px 14px;font-size:15px;color:var(--ink2)">Kategori</a>
+<a href="Katalog.dc.html" style="padding:10px 14px;font-size:15px;color:var(--ink2)">Populer</a>
+<a href="Katalog.dc.html" style="padding:10px 14px;font-size:15px;color:var(--ink2)">Terbaru</a>
+<a href="Katalog.dc.html" style="padding:10px 14px;font-size:15px;color:var(--ink2)">Koleksi Digital</a>
+<a href="Tentang.dc.html" style="padding:10px 14px;border-radius:999px;background:var(--soft);color:var(--strong);font-size:15px;font-weight:500">Tentang</a>
+</nav>
+<div style="display:flex;gap:10px;align-items:center">
+<button type="button" onClick="{{toggleTheme}}" style="padding:10px 16px;border:1px solid var(--bd2);border-radius:999px;background:transparent;color:var(--ink);font-size:14px;font-weight:500;min-height:44px">{{themeLabel}}</button>
+<a href="Login.dc.html" style="padding:11px 18px;font-size:15px;font-weight:500;color:var(--strong)">Masuk</a>
+<a href="Login.dc.html" style="padding:11px 20px;border-radius:999px;background:var(--pri);color:var(--onpri);font-size:15px;font-weight:500">Daftar</a>
+</div>
+</header>
+
+
+<section style="max-width:1200px;margin:0 auto;padding:48px 40px 56px;display:flex;flex-direction:column;gap:20px"><span style="font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:600">Tentang perpustakaan</span><h1 style="margin:0;font-family:Fraunces,Georgia,serif;font-weight:500;font-size:60px;line-height:1.04;letter-spacing:-.02em;color:var(--strong);max-width:820px;text-wrap:balance">[KALIMAT UTAMA TENTANG PERPUSTAKAAN]</h1><p style="margin:0;font-size:18px;line-height:1.65;color:var(--mut);max-width:680px">[PARAGRAF PENGANTAR: sejarah singkat, tujuan, dan siapa yang dilayani.]</p></section>
+<section style="max-width:1200px;margin:0 auto;padding:0 40px 56px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(320px,100%),1fr));gap:20px">
+<div style="background:var(--card);border:1px solid var(--bd);border-radius:24px;padding:28px;display:flex;flex-direction:column;gap:10px"><h2 style="margin:0;font-family:Fraunces,Georgia,serif;font-weight:500;font-size:26px">Visi</h2><p style="margin:0;font-size:16px;line-height:1.65;color:var(--mut)">[TEKS VISI]</p></div>
+<div style="background:var(--card);border:1px solid var(--bd);border-radius:24px;padding:28px;display:flex;flex-direction:column;gap:10px"><h2 style="margin:0;font-family:Fraunces,Georgia,serif;font-weight:500;font-size:26px">Misi</h2><p style="margin:0;font-size:16px;line-height:1.65;color:var(--mut)">[TEKS MISI]</p></div></section>
+<section style="max-width:1200px;margin:0 auto;padding:0 40px 56px"><h2 style="margin:0 0 24px;font-family:Fraunces,Georgia,serif;font-weight:500;font-size:36px">Layanan</h2><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr));gap:16px"><sc-for list="{{services}}" as="s" hint-placeholder-count="4"><div style="padding:24px;border-radius:20px;background:var(--soft);display:flex;flex-direction:column;gap:8px"><span style="font-family:Fraunces,Georgia,serif;font-size:22px;font-weight:500;color:var(--strong)">{{s.t}}</span><span style="font-size:14px;line-height:1.6;color:var(--ink2)">{{s.d}}</span></div></sc-for></div></section>
+<section style="max-width:1200px;margin:0 auto;padding:0 40px 56px;display:flex;flex-wrap:wrap;gap:40px;align-items:flex-start"><div style="flex:1 1 360px;min-width:0"><h2 style="margin:0 0 20px;font-family:Fraunces,Georgia,serif;font-weight:500;font-size:36px">Pertanyaan umum</h2><div style="display:flex;flex-direction:column"><sc-for list="{{faq}}" as="q" hint-placeholder-count="4"><div style="border-top:1px solid var(--bd)"><button type="button" aria-expanded="{{q.open}}" onClick="{{q.pick}}" style="width:100%;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 0;border:0;background:transparent;color:var(--ink);font-size:17px;font-weight:600;text-align:left;min-height:56px">{{q.q}}<span style="font-size:22px;color:var(--link);flex:none">{{q.sign}}</span></button><sc-if value="{{q.open}}" hint-placeholder-val="{{ false }}"><p class="md" style="margin:0 0 18px;font-size:15px;line-height:1.65;color:var(--mut)">{{q.a}}</p></sc-if></div></sc-for></div></div>
+<div style="flex:1 1 320px;min-width:0;background:var(--card);border:1px solid var(--bd);border-radius:24px;padding:28px;display:flex;flex-direction:column;gap:14px"><h2 style="margin:0;font-family:Fraunces,Georgia,serif;font-weight:500;font-size:26px">Kunjungi dan hubungi kami</h2><dl style="margin:0;display:grid;grid-template-columns:auto 1fr;gap:12px 20px;font-size:15px"><dt style="color:var(--mut)">Alamat</dt><dd style="margin:0">[ALAMAT PERPUSTAKAAN]</dd><dt style="color:var(--mut)">Jam layanan</dt><dd style="margin:0">[JAM LAYANAN]</dd><dt style="color:var(--mut)">Email</dt><dd style="margin:0">[EMAIL]</dd><dt style="color:var(--mut)">Telepon</dt><dd style="margin:0">[NOMOR TELEPON]</dd></dl></div></section>
+<!-- Footer -->
+<footer style="border-top:1px solid var(--bd)">
+<div style="max-width:1200px;margin:0 auto;padding:44px 40px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(200px,100%),1fr));gap:32px;font-size:14px;color:var(--mut)">
+<div style="display:flex;flex-direction:column;gap:10px">
+<span style="font-family:Fraunces,Georgia,serif;font-size:22px;font-weight:600;color:var(--ink)">Aksara</span>
+<span style="line-height:1.55">Perpustakaan digital nasional. [ALAMAT PERPUSTAKAAN]</span>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px"><span style="font-weight:600;color:var(--ink)">Jelajahi</span><a href="Katalog.dc.html" style="color:var(--mut)">Katalog</a><a href="Katalog.dc.html" style="color:var(--mut)">Koleksi Digital</a></div>
+<div style="display:flex;flex-direction:column;gap:8px"><span style="font-weight:600;color:var(--ink)">Layanan</span><a href="Login.dc.html" style="color:var(--mut)">Keanggotaan</a><a href="Login.dc.html" style="color:var(--mut)">Aturan peminjaman</a></div>
+<div style="display:flex;flex-direction:column;gap:8px"><span style="font-weight:600;color:var(--ink)">Kontak</span><span>[EMAIL]</span><span>[JAM LAYANAN]</span></div>
+</div>
+</footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1360,"height":1900}}'>
+class Component extends DCLogic {
+constructor(props){ super(props); this.state = Object.assign({ theme:'dark' }, { faq:0 }); }
+renderVals() {
+const th = this.state.theme, dk = th==='dark', S = this.state;
+const chip = (p) => `padding:4px 12px;border-radius:99px;font-size:12px;font-weight:600;background:${p[0]};color:${p[1]};white-space:nowrap;`;
+const ok = dk ? ['#12382F','#6EE0C3'] : ['#DDF0E4','#07522C'];
+const wr = dk ? ['#3D2A12','#F2B24C'] : ['#FBEBC8','#5C3A05'];
+const er = dk ? ['#3D1A17','#FF9C92'] : ['#F6DAD6','#7A1F18'];
+const nt = dk ? ['#16305A','#D8E1F0'] : ['#DDEBE8','#10264A'];
+const pal = [['#183E70','#FBF8F2'],['#B7791F','#1B1206'],['#243B5A','#FBF8F2'],['#7A2E2B','#FBF8F2'],['#DCE5F3','#0B1733']];
+const cv = (i,w,h,extra) => `background:${pal[i%5][0]};color:${pal[i%5][1]};border-radius:4px 8px 8px 4px;box-shadow:inset 4px 0 0 rgba(0,0,0,.16);width:${w};height:${h};flex:none;box-sizing:border-box;${extra||''}`;
+const MENU = [];
+const menu = MENU.map(m => m[0]==='h' ? { isHead:true, isLink:false, label:m[1], href:'' } : { isHead:false, isLink:true, label:m[1], href:m[2], badge:m[4]||'', style:`display:flex;align-items:center;gap:8px;padding:11px 12px;border-radius:10px;min-height:44px;box-sizing:border-box;font-size:14px;color:#EAF2F0;background:${m[1]===''?'rgba(255,255,255,.14)':'transparent'};font-weight:${m[1]===''?600:400}` });
+return Object.assign({ theme: th, toggleTheme: () => this.setState({ theme: dk?'light':'dark' }), themeLabel: dk?'Mode terang':'Mode gelap', menu }, (() => { const F=[['Siapa yang boleh menjadi anggota?','[JAWABAN]'],['Berapa lama masa pinjam?','[JAWABAN]'],['Bagaimana cara memperpanjang pinjaman?','[JAWABAN]'],['Apa yang terjadi bila terlambat?','[JAWABAN]']];
+return { services:[{t:'Peminjaman buku',d:'Pinjam koleksi cetak dan pantau masa pinjam dari akunmu.'},{t:'Koleksi digital',d:'Baca buku digital langsung dari perangkatmu.'},{t:'Ruang baca',d:'[DESKRIPSI RUANG BACA]'},{t:'Bantuan pustakawan',d:'Tanya rekomendasi bacaan dan cara menelusuri koleksi.'}],
+ faq:F.map((f,i)=>({q:f[0],a:f[1],open:S.faq===i,sign:S.faq===i?'–':'+',pick:()=>this.setState({faq:S.faq===i?-1:i})})) }; })());
+}
+}
+</script>
+</body>
+</html>

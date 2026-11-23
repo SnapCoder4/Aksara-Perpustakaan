@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Halaman tidak ditemukan{% endblock %}
+{% block css %}<link rel="stylesheet" href="/static/css/pages/public.css">{% endblock %}
+{% block content %}
+<div class="wrap">
+  <div class="notfound">
+    <span class="big" aria-hidden="true">404</span>
+    <h1 class="h2">{{ message or "Halaman ini tidak ada di rak kami." }}</h1>
+    <p class="muted" style="max-width:480px">Tautan mungkin salah atau bukunya sudah dipindahkan. Coba cari lewat katalog.</p>
+    <div class="row wrap-flex gap-12"><a class="btn" href="/katalog">Buka katalog</a><a class="btn btn-ghost" href="/">Ke beranda</a></div>
+  </div>
+</div>
+{% endblock %}

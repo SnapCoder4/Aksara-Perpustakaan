@@ -1,0 +1,34 @@
+# Rahasia (jangan pernah di-commit; .env.example boleh)
+.env
+.env.*
+!.env.example
+
+# Virtualenv
+.venv/
+venv/
+env_baru/
+
+# Python
+__pycache__/
+*.pyc
+
+# Database lokal dan backup
+*.db
+*.db.bak
+*.dump
+*.sqlite3
+
+# Upload pengguna
+static/uploads/covers/*
+!static/uploads/covers/.gitkeep
+
+# Arsip, backup kerja, dan file desain
+_old/
+aksara-design.zip
+.impeccable/
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

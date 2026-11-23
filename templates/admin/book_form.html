@@ -1,0 +1,95 @@
+{% extends "app_shell.html" %}
+{% from "partials/fields.html" import field %}
+{% set panel = "admin" %}
+{% block title %}{{ "Edit buku" if book else "Tambah buku" }}{% endblock %}
+{% block css2 %}<link rel="stylesheet" href="/static/css/vendor/cropper.min.css?v=1"><link rel="stylesheet" href="/static/css/pages/crop.css?v=2">{% endblock %}
+{% block content %}
+{% set has_cover = book and book.cover_path %}
+<div><span class="kicker">Koleksi</span><h1 class="page-title">{{ "Edit buku" if book else "Tambah buku" }}</h1></div>
+<form method="post" enctype="multipart/form-data" class="card form-card" novalidate>
+  <div class="form-split">
+    <div class="field {{ 'has-error' if errors.get('cover') }}">
+      <span class="label" id="cover-label">Foto sampul</span>
+      <div class="dropzone{{ ' err' if errors.get('cover') }}" data-dropzone data-state="{{ 'preview' if has_cover else 'empty' }}" data-max="2097152"
+           data-original="{{ book.cover_path if has_cover else '' }}" role="group" aria-labelledby="cover-label" tabindex="0">
+        <input type="file" name="cover" accept="image/jpeg,image/png,image/webp" hidden>
+        <input type="hidden" name="hapus_cover" value="0">
+        <input type="file" data-pick accept="image/*" hidden aria-label="Pilih file foto">
+        <input type="file" data-cam accept="image/*" capture="environment" hidden aria-label="Ambil foto dengan kamera">
+        <div class="dz-state dz-empty">
+          <span class="dz-icon" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M7 9l5-5 5 5M4 20h16"/></svg></span>
+          <span class="dz-title">Tarik foto ke sini atau klik untuk memilih</span>
+          <span class="hint">JPG, PNG, atau WEBP · akan dipotong ke rasio 2:3</span>
+          <span class="row gap-8 wrap-flex" style="justify-content:center">
+            <button type="button" class="btn btn-ghost btn-sm" data-dz-pick>Pilih file</button>
+            <button type="button" class="btn btn-ghost btn-sm" data-dz-cam>Ambil foto</button>
+          </span>
+        </div>
+        <div class="dz-state dz-uploading"><span class="dz-title">Mengunggah...</span><div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="100"><i></i></div></div>
+        <div class="dz-state dz-preview">
+          <div class="cover cv-0"><img src="{{ '/static/uploads/covers/' ~ book.cover_path if has_cover else '' }}" alt="Pratinjau sampul {{ book.judul if book else 'buku' }}"></div>
+          <div class="row gap-8 wrap-flex" style="justify-content:center">
+            <button type="button" class="btn btn-ghost btn-sm" data-dz-replace>Ganti foto</button>
+            <button type="button" class="btn btn-ghost btn-sm" data-dz-remove>Hapus</button>
+          </div>
+        </div>
+        <p class="dz-err" role="alert">{{ errors.get("cover", "") }}</p>
+      </div>
+    </div>
+
+    <div class="form-grid">
+      {% if book %}
+        <div class="field"><label>Kode buku</label><input class="input" value="{{ book.kode_buku }}" disabled></div>
+      {% else %}{{ field("kode_buku", "Kode buku", form, errors, required=true, max=20, ph="BK004") }}{% endif %}
+      {{ field("judul", "Judul", form, errors, required=true, max=150, cls="full" if book else "", ph="Judul buku") }}
+      {{ field("penulis", "Penulis", form, errors, required=true, max=100, ph="Nama penulis") }}
+      {{ field("penerbit", "Penerbit", form, errors, max=100, ph="Nama penerbit") }}
+      {{ field("isbn", "ISBN", form, errors, max=20, ph="978-...") }}
+      {{ field("tahun", "Tahun terbit", form, errors, type="number", ph="2026") }}
+      <div class="field {{ 'has-error' if errors.get('category_id') }}">
+        <label for="f-category_id">Kategori</label>
+        <select class="select" id="f-category_id" name="category_id">
+          <option value="">Tanpa kategori</option>
+          {% for c in cats %}<option value="{{ c.id }}" {{ "selected" if form.get("category_id")|string == c.id|string }}>{{ c.nama }}</option>{% endfor %}
+        </select>
+        {% if errors.get("category_id") %}<span class="field-error" role="alert">{{ errors.category_id }}</span>{% endif %}
+      </div>
+      {{ field("stok", "Jumlah stok", form, errors, type="number", required=true, ph="0") }}
+      <div class="field full {{ 'has-error' if errors.get('sinopsis') }}">
+        <label for="f-sinopsis">Sinopsis</label>
+        <textarea class="textarea" id="f-sinopsis" name="sinopsis" maxlength="3000" placeholder="Ringkasan isi buku">{{ form.get("sinopsis", "") }}</textarea>
+        {% if errors.get("sinopsis") %}<span class="field-error" role="alert">{{ errors.sinopsis }}</span>{% endif %}
+      </div>
+    </div>
+  </div>
+  <div class="row gap-12 wrap-flex" style="margin-top:28px">
+    <button class="btn" type="submit" data-loading-btn><span class="spin"></span>{{ "Simpan perubahan" if book else "Simpan buku" }}</button>
+    <a class="btn btn-ghost" href="/admin/buku">Batal</a>
+  </div>
+</form>
+
+<dialog id="crop-modal" class="modal crop-modal" aria-labelledby="crop-title">
+  <div class="modal-body">
+    <h2 id="crop-title" class="h3">Atur foto sampul</h2>
+    <div class="crop-main">
+      <div class="crop-stage"><img id="crop-img" alt="Foto yang akan dipotong"></div>
+      <div class="crop-side">
+        <span class="label">Pratinjau di katalog</span>
+        <div class="crop-preview" aria-hidden="true"></div>
+      </div>
+    </div>
+    <p class="dz-err crop-err" role="alert" id="crop-err"></p>
+    <div class="crop-tools">
+      <label class="crop-zoom"><span>Zoom</span><input type="range" id="crop-zoom" min="0" max="100" value="0" aria-label="Zoom foto"></label>
+      <button type="button" class="btn btn-ghost btn-sm" data-crop-rot="-90" aria-label="Putar kiri 90 derajat">⟲ Kiri</button>
+      <button type="button" class="btn btn-ghost btn-sm" data-crop-rot="90" aria-label="Putar kanan 90 derajat">Kanan ⟳</button>
+      <button type="button" class="btn btn-ghost btn-sm" data-crop-reset>Atur ulang</button>
+    </div>
+    <div class="modal-actions">
+      <button type="button" class="btn btn-ghost btn-sm" data-crop-cancel>Batal</button>
+      <button type="button" class="btn btn-sm" data-crop-ok>Pakai foto ini</button>
+    </div>
+  </div>
+</dialog>
+{% endblock %}
+{% block js %}<script src="/static/js/vendor/cropper.min.js?v=1"></script><script src="/static/js/upload.js?v=2"></script>{% endblock %}

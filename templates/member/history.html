@@ -1,0 +1,30 @@
+{% extends "app_shell.html" %}
+{% from "partials/pagination.html" import pagination %}
+{% set panel = "member" %}{% set active_menu = "riwayat" %}
+{% block title %}Riwayat pinjam{% endblock %}
+{% block content %}
+<div><span class="kicker">Akun saya</span><h1 class="page-title">Riwayat peminjaman</h1></div>
+<div class="tabs" role="group" aria-label="Filter status" style="align-self:flex-start">
+  <a href="/akun/riwayat" class="{{ 'on' if not status }}">Semua</a>
+  <a href="/akun/riwayat?status=Dipinjam" class="{{ 'on' if status == 'Dipinjam' }}">Dipinjam</a>
+  <a href="/akun/riwayat?status=Dikembalikan" class="{{ 'on' if status == 'Dikembalikan' }}">Dikembalikan</a>
+</div>
+<div class="card">
+  <div class="table-wrap">
+    <table class="table">
+      <thead><tr><th>Buku</th><th>Tgl pinjam</th><th>Jatuh tempo</th><th>Tgl kembali</th><th>Status</th><th class="num">Denda</th></tr></thead>
+      <tbody>
+      {% for l in loans %}{% set st = loan_status(l) %}
+        <tr>
+          <td><a href="/buku/{{ l.kode_buku }}" style="font-weight:600">{{ l.book.judul if l.book else l.kode_buku }}</a></td>
+          <td>{{ l.tanggal_pinjam|tgl }}</td><td>{{ l.jatuh_tempo|tgl }}</td><td>{{ l.tanggal_kembali|tgl if l.tanggal_kembali else "-" }}</td>
+          <td><span class="chip {{ 'chip-err' if st == 'Terlambat' else 'chip-ok' if st == 'Dikembalikan' else 'chip-warn' }}">{{ st }}</span></td>
+          <td class="num">{{ l.denda|rupiah if l.denda else "-" }}</td>
+        </tr>
+      {% else %}<tr><td colspan="6"><div class="empty"><span class="serif">Belum ada riwayat.</span></div></td></tr>{% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="row between wrap-flex gap-12" style="margin-top:16px"><span class="hint">{{ total }} transaksi</span>{{ pagination(request, page, pages) }}</div>
+</div>
+{% endblock %}

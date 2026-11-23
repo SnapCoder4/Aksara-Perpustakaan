@@ -1,0 +1,27 @@
+{% extends "app_shell.html" %}
+{% from "partials/fields.html" import field %}
+{% set panel = "admin" %}
+{% block title %}{{ "Edit anggota" if member else "Tambah anggota" }}{% endblock %}
+{% block content %}
+<div><span class="kicker">Sirkulasi</span><h1 class="page-title">{{ "Edit anggota" if member else "Tambah anggota" }}</h1></div>
+<form method="post" class="card form-card" novalidate>
+  <div class="form-grid">
+    {% if member %}<div class="field"><label>Nomor anggota</label><input class="input" value="{{ member.id_member }}" disabled></div>
+    {% else %}{{ field("id_member", "Nomor anggota", form, errors, required=true, max=20) }}{% endif %}
+    {{ field("nama", "Nama lengkap", form, errors, required=true, max=100) }}
+    {{ field("email", "Email", form, errors, type="email", required=true, max=120) }}
+    {{ field("no_hp", "Nomor HP", form, errors, type="tel", required=true, max=20) }}
+    <div class="field"><label for="f-status">Status</label>
+      <select class="select" id="f-status" name="status">
+        <option value="Aktif" {{ "selected" if form.get("status") != "Nonaktif" }}>Aktif</option>
+        <option value="Nonaktif" {{ "selected" if form.get("status") == "Nonaktif" }}>Nonaktif</option>
+      </select></div>
+    {{ field("password", "Kata sandi" ~ (" baru" if member else ""), form, errors, type="password", ac="new-password", max=72,
+             hint="Kosongkan agar tidak berubah. Anggota tanpa kata sandi tidak bisa login." if member else "Opsional. Tanpa kata sandi, anggota belum bisa login sendiri.") }}
+  </div>
+  <div class="row gap-12 wrap-flex" style="margin-top:24px">
+    <button class="btn" type="submit" data-loading-btn><span class="spin"></span>Simpan</button>
+    <a class="btn btn-ghost" href="/admin/anggota">Batal</a>
+  </div>
+</form>
+{% endblock %}

@@ -1,0 +1,72 @@
+{% extends "app_shell.html" %}
+{% from "partials/book_card.html" import cover %}
+{% set panel = "admin" %}
+{% block title %}Dashboard admin{% endblock %}
+{% macro change(v) %}{% if v is not none %}<span class="delta{{ ' down' if v < 0 }}">{{ "+" if v >= 0 }}{{ v }}% dari bulan lalu</span>{% endif %}{% endmacro %}
+{% block content %}
+<div class="grid-stats">
+  <div class="card span2">
+    <span class="kicker">Ringkasan perpustakaan</span>
+    <h1 class="page-title">Dashboard statistik</h1>
+    <div class="row wrap-flex" style="gap:32px;margin-top:20px">
+      <div class="stat"><span class="l">Peminjaman bulan ini</span><span class="row gap-12"><span class="n" data-count="{{ cur.pinjam }}">{{ cur.pinjam }}</span>{{ change(d_pinjam) }}</span></div>
+      <div class="stat"><span class="l">Pengembalian bulan ini</span><span class="row gap-12"><span class="n" data-count="{{ cur.kembali }}">{{ cur.kembali }}</span>{{ change(d_kembali) }}</span></div>
+    </div>
+  </div>
+  <div class="card stat"><span class="l">Anggota aktif</span><span class="n" data-count="{{ members_active }}">{{ members_active }}</span><span class="hint">{{ books_total }} judul buku</span></div>
+  <div class="card stat"><span class="l">Terlambat dikembalikan</span><span class="n" data-count="{{ overdue }}">{{ overdue }}</span>{% if overdue %}<a href="/admin/peminjaman?status=Terlambat" class="delta down">Lihat daftar</a>{% else %}<span class="delta">Tidak ada</span>{% endif %}</div>
+</div>
+
+<div class="split">
+  <section class="card main-col" aria-labelledby="g1">
+    <div class="card-head">
+      <div><h2 id="g1">Aktivitas sirkulasi</h2><span class="hint">Per bulan, 12 bulan terakhir</span></div>
+      <div class="legend"><span><i class="seg-pinjam"></i>Pinjam</span><span><i class="seg-kembali"></i>Kembali</span><span><i class="seg-telat"></i>Terlambat</span></div>
+    </div>
+    <div class="bars" role="img" aria-label="Grafik batang peminjaman, pengembalian, dan keterlambatan 12 bulan terakhir">
+      {% for m in months %}{% set tot = m.pinjam + m.kembali + m.telat %}
+      <div class="bar" title="{{ m.label }}: {{ m.pinjam }} pinjam, {{ m.kembali }} kembali, {{ m.telat }} terlambat">
+        <div class="stack-bar" style="height:{{ [tot / peak * 100, 1.5]|max if tot else 1 }}%">
+          {% if tot %}<div class="seg-telat" style="height:{{ m.telat / tot * 100 }}%"></div><div class="seg-kembali" style="height:{{ m.kembali / tot * 100 }}%"></div><div class="seg-pinjam" style="height:{{ m.pinjam / tot * 100 }}%"></div>{% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <div class="bar-labels">{% for m in months %}<span>{{ m.label }}</span>{% endfor %}</div>
+  </section>
+
+  <section class="card side-col" aria-labelledby="g2">
+    <h2 id="g2" style="margin-bottom:16px">Peminjaman per kategori</h2>
+    {% if cat_total %}
+    <div class="donut">
+      <svg width="200" height="200" viewBox="0 0 200 200" role="img" aria-label="Diagram donat peminjaman per kategori">
+        {% for s in segs %}<circle cx="100" cy="100" r="76" stroke="{{ s.color }}" stroke-dasharray="{{ s.dash }}" stroke-dashoffset="{{ s.offset }}"/>{% endfor %}
+      </svg>
+      <div class="center"><span class="hint">Total</span><b>{{ cat_total }}</b></div>
+    </div>
+    <div class="donut-list">{% for s in segs %}<div><span><i style="background:{{ s.color }}"></i>{{ s.name }}</span><b>{{ s.value }}</b></div>{% endfor %}</div>
+    {% else %}<div class="empty">Belum ada data peminjaman.</div>{% endif %}
+  </section>
+</div>
+
+<div class="split">
+  <section class="card main-col" aria-labelledby="g3">
+    <div class="card-head"><h2 id="g3">Peminjaman terbaru</h2><a href="/admin/peminjaman/baru" class="btn btn-sm">Catat peminjaman</a></div>
+    <div class="table-wrap"><table class="table">
+      <thead><tr><th>Anggota</th><th>Buku</th><th>Batas kembali</th><th>Status</th></tr></thead>
+      <tbody>
+      {% for l in recent %}{% set st = loan_status(l) %}
+        <tr><td>{{ l.member.nama if l.member else l.id_member }}</td><td style="font-weight:500">{{ l.book.judul if l.book else l.kode_buku }}</td><td class="muted">{{ l.jatuh_tempo|tgl }}</td>
+        <td><span class="chip {{ 'chip-err' if st == 'Terlambat' else 'chip-ok' if st == 'Dikembalikan' else 'chip-warn' }}">{{ st }}</span></td></tr>
+      {% else %}<tr><td colspan="4"><div class="empty">Belum ada transaksi.</div></td></tr>{% endfor %}
+      </tbody>
+    </table></div>
+  </section>
+  <section class="card side-col" aria-labelledby="g4">
+    <h2 id="g4" style="margin-bottom:8px">Buku paling populer</h2>
+    {% for b, n in top %}
+    <div class="list-item">{{ cover(b, "xs") }}<span class="info"><b>{{ b.judul }}</b><span>{{ b.penulis }}</span></span><span class="chip">{{ n }}x</span></div>
+    {% else %}<div class="empty">Belum ada buku.</div>{% endfor %}
+  </section>
+</div>
+{% endblock %}

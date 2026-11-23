@@ -1,0 +1,19 @@
+{% extends "app_shell.html" %}
+{% from "partials/fields.html" import field %}
+{% set panel = "member" %}{% set active_menu = "profil" %}
+{% block title %}Profil{% endblock %}
+{% block content %}
+<div><span class="kicker">Akun saya</span><h1 class="page-title">Profil anggota</h1></div>
+<form method="post" class="card form-card" novalidate>
+  <div class="form-grid">
+    <div class="field full"><label>Nomor anggota</label><input class="input" value="{{ member.id_member }}" disabled></div>
+    {{ field("nama", "Nama lengkap", form, errors, required=true, max=100) }}
+    {{ field("email", "Email", form, errors, type="email", required=true, max=120) }}
+    {{ field("no_hp", "Nomor HP", form, errors, type="tel", required=true, max=20) }}
+    <div class="full"><h2 class="h3" style="margin-top:8px">Ganti kata sandi</h2><p class="hint">Kosongkan bila tidak ingin mengganti.</p></div>
+    {{ field("password_lama", "Kata sandi lama", {}, errors, type="password", ac="current-password", max=72) }}
+    {{ field("password_baru", "Kata sandi baru", {}, errors, type="password", ac="new-password", max=72, hint="Minimal 8 karakter.") }}
+  </div>
+  <div class="row gap-12" style="margin-top:24px"><button class="btn" type="submit" data-loading-btn><span class="spin"></span>Simpan perubahan</button></div>
+</form>
+{% endblock %}

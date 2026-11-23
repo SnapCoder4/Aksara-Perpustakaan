@@ -1,0 +1,56 @@
+{% extends "app_shell.html" %}
+{% from "partials/book_card.html" import cover %}
+{% set panel = "member" %}{% set active_menu = "dashboard" %}
+{% block title %}Dashboard saya{% endblock %}
+{% block content %}
+<div>
+  <span class="kicker">Halo, {{ member.nama.split(" ")[0] }}</span>
+  <h1 class="page-title">Dashboard anggota</h1>
+  <p class="muted" style="margin-top:4px">Nomor anggota <b style="color:var(--ink)">{{ member.id_member }}</b> · {{ member.status or "Aktif" }}</p>
+</div>
+
+<div class="grid-stats">
+  <div class="card stat"><span class="l">Sedang dipinjam</span><span class="n">{{ loans|length }}<small class="muted" style="font-size:16px"> / {{ settings.max_loans }}</small></span></div>
+  <div class="card stat"><span class="l">Jatuh tempo terdekat</span><span class="n" style="font-size:24px">{{ (loans[0].jatuh_tempo|tgl) if loans else "-" }}</span></div>
+  <div class="card stat"><span class="l">Total peminjaman</span><span class="n">{{ total }}</span></div>
+  <div class="card stat"><span class="l">Denda</span><span class="n" style="font-size:26px">{{ (fines + accruing)|rupiah }}</span>{% if accruing %}<span class="delta down">{{ accruing|rupiah }} berjalan</span>{% endif %}</div>
+</div>
+
+<div class="split">
+  <section class="card main-col" aria-labelledby="h-loans">
+    <div class="card-head"><h2 id="h-loans">Buku yang sedang dipinjam</h2><a href="/akun/riwayat" style="font-size:14px;font-weight:500">Semua riwayat</a></div>
+    {% for l in loans %}
+    {% set st = loan_status(l) %}
+    <a href="/buku/{{ l.kode_buku }}" class="list-item" style="color:var(--ink)">
+      {{ cover(l.book, "xs") }}
+      <span class="info"><b>{{ l.book.judul }}</b><span>Dipinjam {{ l.tanggal_pinjam|tgl }} · jatuh tempo {{ l.jatuh_tempo|tgl }}</span></span>
+      <span class="chip {{ 'chip-err' if st == 'Terlambat' else 'chip-ok' }}">{{ st }}</span>
+    </a>
+    {% else %}
+    <div class="empty"><span class="serif">Belum ada buku yang dipinjam.</span><a href="/katalog" class="btn btn-sm" style="margin-top:12px">Jelajahi katalog</a></div>
+    {% endfor %}
+    {% if loans %}<p class="hint" style="margin-top:12px">Pengembalian dilakukan di meja petugas. Denda {{ settings.fine_per_day|rupiah }} per hari keterlambatan.</p>{% endif %}
+  </section>
+
+  <section class="card side-col" aria-labelledby="h-notes">
+    <h2 id="h-notes" style="margin-bottom:8px">Notifikasi</h2>
+    {% for n in notes %}
+    <div class="note-item{{ ' read' if n.dibaca and not loop.first and false }}"><span class="dot"></span><span class="grow">{{ n.pesan }}<br><span class="hint">{{ n.dibuat|tgl }}</span></span></div>
+    {% else %}<div class="empty" style="padding:20px 0">Tidak ada notifikasi.</div>{% endfor %}
+  </section>
+</div>
+
+<section class="card" aria-labelledby="h-wish">
+  <div class="card-head"><h2 id="h-wish">Wishlist</h2></div>
+  {% if wishlist %}
+  <div class="grid-books" style="grid-template-columns:repeat(auto-fill,minmax(150px,1fr))">
+    {% for b in wishlist %}
+    <div class="stack" style="gap:10px">
+      <a href="/buku/{{ b.kode_buku }}" style="color:var(--ink)">{{ cover(b) }}<b style="font-size:14px;display:block;margin-top:8px">{{ b.judul }}</b></a>
+      <form method="post" action="/buku/{{ b.kode_buku }}/wishlist"><input type="hidden" name="next" value="/akun"><button class="btn btn-ghost btn-sm btn-block" type="submit">Hapus</button></form>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}<div class="empty"><span class="serif">Belum ada buku di wishlist.</span>Simpan buku dari halaman detail. <a href="/katalog">Jelajahi katalog</a></div>{% endif %}
+</section>
+{% endblock %}

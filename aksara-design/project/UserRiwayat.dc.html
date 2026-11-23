@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Aksara: Riwayat Peminjaman</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>.t{--page:#F6F2E9;--paper:#F6F2E9;--card:#FFFFFF;--soft:#E6ECF5;--bd:#E2DDD0;--bd2:#C3CBDB;--ink:#0B1733;--ink2:#1E2B4A;--mut:#4A5873;--strong:#10264A;--pri:#10264A;--onpri:#FBF8F2;--link:#183E70;--gold:#8A5A0B;--ok:#0A6B3B;--warn:#8A3B12;--err:#8F2A22;--errtx:#5A3A37;--dz:#EEF2F9;--dzi:#DCE5F3;--dzb:#9FB2D0;--errbg:#FCF1EF;--erri:#F6DAD6;--errbd:#D69A93;}.t[data-theme=dark]{--page:#0B1733;--paper:#0B1733;--card:#10264A;--soft:#16305A;--bd:#1E3760;--bd2:#3A5686;--ink:#F4F1EA;--ink2:#DCE4F2;--mut:#A9B7D0;--strong:#F4F1EA;--pri:#D9B66F;--onpri:#0B1733;--link:#F2D49A;--gold:#E0B35A;--ok:#6EE0A8;--warn:#F2A06B;--err:#FF9C92;--errtx:#E8C4C0;--dz:#0F2147;--dzi:#1B3A6B;--dzb:#3A5686;--errbg:#2A1513;--erri:#4A2420;--errbd:#7A3A34;}
+body{margin:0;font-family:Inter,system-ui,sans-serif}
+a{color:var(--link);text-decoration:none}
+button{font-family:inherit;cursor:pointer}
+input,select,textarea{font-family:inherit}
+input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-visible{outline:3px solid var(--link);outline-offset:2px}
+@keyframes pop{from{opacity:0;transform:translateY(10px) scale(.98)}to{opacity:1;transform:none}}
+.md{animation:pop .25s ease both}
+@media (prefers-reduced-motion:reduce){.md{animation:none}}
+</style>
+</helmet>
+<div class="t" data-theme="{{theme}}" style="position:relative;overflow:hidden;width:100%;display:flex;flex-wrap:wrap;min-height:1000px;background:var(--page);color:var(--ink)">
+<aside aria-label="Menu anggota" style="flex:0 0 250px;box-sizing:border-box;background:#10264A;color:#EAF2F0;padding:22px 14px">
+<a href="Main.dc.html" style="display:flex;align-items:center;gap:10px;padding:4px 8px 20px;color:#EAF2F0"><span style="width:36px;height:36px;border-radius:10px;background:#FBF8F2;color:#10264A;display:flex;align-items:center;justify-content:center;font-family:Fraunces,Georgia,serif;font-size:21px">A</span><span style="font-family:Fraunces,Georgia,serif;font-size:20px;font-weight:600">Aksara</span></a>
+<nav style="display:flex;flex-direction:column;gap:2px">
+<sc-for list="{{menu}}" as="m" hint-placeholder-count="8"><a href="{{m.href}}" style="{{m.style}}">{{m.label}}<sc-if value="{{m.badge}}" hint-placeholder-val="{{ false }}"><span style="margin-left:auto;min-width:22px;height:22px;border-radius:99px;background:#D9B66F;color:#2A1C03;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center">{{m.badge}}</span></sc-if></a></sc-for>
+</nav>
+</aside>
+<main style="flex:999 1 640px;min-width:0;padding:28px 32px 56px;display:flex;flex-direction:column;gap:22px">
+<div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px"><div style="display:flex;flex-direction:column;gap:4px"><span style="font-size:14px;color:var(--mut)">Dashboard anggota</span><h1 style="margin:0;font-family:Fraunces,Georgia,serif;font-weight:500;font-size:34px;letter-spacing:-.01em">Riwayat peminjaman</h1></div><div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center"><button type="button" onClick="{{toggleTheme}}" style="padding:10px 16px;border:1px solid var(--bd2);border-radius:999px;background:transparent;color:var(--ink);font-size:14px;font-weight:500;min-height:44px">{{themeLabel}}</button></div></div>
+<div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center"><label for="fs" style="position:absolute;left:-9999px">Cari</label><input id="fs" placeholder="Cari judul buku" style="flex:1 1 260px;max-width:360px;padding:11px 16px;border:1px solid var(--bd2);border-radius:999px;background:var(--card);color:var(--ink);font-size:14px;min-height:44px;box-sizing:border-box"></div>
+<div role="tablist" aria-label="Status" style="display:flex;flex-wrap:wrap;gap:6px;border-bottom:1px solid var(--bd)"><sc-for list="{{tabs}}" as="t" hint-placeholder-count="4"><button type="button" role="tab" aria-selected="{{t.on}}" onClick="{{t.pick}}" style="{{t.style}}">{{t.label}}</button></sc-for></div>
+<section aria-label="Riwayat" style="background:var(--card);border:1px solid var(--bd);border-radius:24px;padding:24px;box-sizing:border-box;padding:10px 22px 18px"><div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;min-width:620px;font-size:14px"><thead><tr style="text-align:left;color:var(--mut);font-size:12px"><th style="padding:12px 8px;font-weight:600">Buku</th><th style="padding:12px 8px;font-weight:600">Dipinjam</th><th style="padding:12px 8px;font-weight:600">Dikembalikan</th><th style="padding:12px 8px;font-weight:600">Status</th><th style="padding:12px 8px;font-weight:600;text-align:right">Denda</th></tr></thead><tbody><sc-for list="{{rows}}" as="r" hint-placeholder-count="6"><tr style="border-top:1px solid var(--bd)"><td style="padding:12px 8px"><span style="display:flex;align-items:center;gap:14px"><span style="{{r.cover}}"></span><span style="display:flex;flex-direction:column"><span style="font-weight:600">{{r.t}}</span><span style="font-size:12px;color:var(--mut)">{{r.a}}</span></span></span></td><td style="padding:12px 8px;color:var(--mut)">[TANGGAL]</td><td style="padding:12px 8px;color:var(--mut)">[TANGGAL]</td><td style="padding:12px 8px"><span style="{{r.chip}}">{{r.s}}</span></td><td style="padding:12px 8px;text-align:right;color:var(--mut)">{{r.f}}</td></tr></sc-for></tbody></table></div><div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;padding-top:14px;font-size:13px;color:var(--mut)"><span>Menampilkan 1 sampai 6 dari [JUMLAH] data</span><span style="display:flex;gap:6px"><span style="min-width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:8px;background:var(--pri);color:var(--onpri);font-weight:600">1</span><span style="min-width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:8px;border:1px solid var(--bd)">2</span><span style="min-width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:8px;border:1px solid var(--bd)">3</span></span></div></section>
+</main>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1360,"height":1000}}'>
+class Component extends DCLogic {
+constructor(props){ super(props); this.state = Object.assign({ theme:'dark' }, { tab:'semua' }); }
+renderVals() {
+const th = this.state.theme, dk = th==='dark', S = this.state;
+const chip = (p) => `padding:4px 12px;border-radius:99px;font-size:12px;font-weight:600;background:${p[0]};color:${p[1]};white-space:nowrap;`;
+const ok = dk ? ['#12382F','#6EE0C3'] : ['#DDF0E4','#07522C'];
+const wr = dk ? ['#3D2A12','#F2B24C'] : ['#FBEBC8','#5C3A05'];
+const er = dk ? ['#3D1A17','#FF9C92'] : ['#F6DAD6','#7A1F18'];
+const nt = dk ? ['#16305A','#D8E1F0'] : ['#DDEBE8','#10264A'];
+const pal = [['#183E70','#FBF8F2'],['#B7791F','#1B1206'],['#243B5A','#FBF8F2'],['#7A2E2B','#FBF8F2'],['#DCE5F3','#0B1733']];
+const cv = (i,w,h,extra) => `background:${pal[i%5][0]};color:${pal[i%5][1]};border-radius:4px 8px 8px 4px;box-shadow:inset 4px 0 0 rgba(0,0,0,.16);width:${w};height:${h};flex:none;box-sizing:border-box;${extra||''}`;
+const MENU = [['l','Dashboard','UserDashboard.dc.html'],['l','Riwayat Peminjaman','UserRiwayat.dc.html'],['l','Sedang Dipinjam','UserDashboard.dc.html'],['l','Wishlist','UserDashboard.dc.html'],['l','Riwayat Pengembalian','UserRiwayat.dc.html'],['l','Notifikasi','UserDashboard.dc.html',0,3],['l','Profil Saya','UserProfil.dc.html'],['l','Pengaturan Akun','UserProfil.dc.html']];
+const menu = MENU.map(m => m[0]==='h' ? { isHead:true, isLink:false, label:m[1], href:'' } : { isHead:false, isLink:true, label:m[1], href:m[2], badge:m[4]||'', style:`display:flex;align-items:center;gap:8px;padding:11px 12px;border-radius:10px;min-height:44px;box-sizing:border-box;font-size:14px;color:#EAF2F0;background:${m[1]==='Riwayat Peminjaman'?'rgba(255,255,255,.14)':'transparent'};font-weight:${m[1]==='Riwayat Peminjaman'?600:400}` });
+return Object.assign({ theme: th, toggleTheme: () => this.setState({ theme: dk?'light':'dark' }), themeLabel: dk?'Mode terang':'Mode gelap', menu }, (() => { const A=[['Jejak Nusantara','Sari Wulandari','Dipinjam',ok,'-','b'],['Mesin dan Makna','Dimas Pratama','Dipinjam',ok,'-','b'],['Peta Bintang','Rini Kusuma','Terlambat',er,'[RP]','l'],['Arsip Kota','Wahyu Setiadi','Dikembalikan',nt,'-','r'],['Langit Terbuka','Rudi Santoso','Dikembalikan',nt,'-','r'],['Kata Pertama','Maya Lestari','Dikembalikan',wr,'Lunas','r']];
+const TL=[['semua','Semua'],['b','Dipinjam'],['r','Dikembalikan'],['l','Terlambat']];
+return { tabs:TL.map(t=>({label:t[1],on:S.tab===t[0],pick:()=>this.setState({tab:t[0]}),style:`padding:12px 16px;border:0;border-bottom:3px solid ${S.tab===t[0]?'var(--link)':'transparent'};background:transparent;color:${S.tab===t[0]?'var(--strong)':'var(--mut)'};font-size:14px;font-weight:${S.tab===t[0]?600:500};min-height:44px`})),
+ rows:A.filter(r=>S.tab==='semua'||r[5]===S.tab).map((r,i)=>({t:r[0],a:r[1],s:r[2],chip:chip(r[3]),f:r[4],cover:cv(i,'40px','56px')})) }; })());
+}
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{# Layout panel dengan sidebar. Anak template mengisi: title, content; variabel panel = "admin" | "member" #}
+{% from "partials/icons.html" import icon %}
+{% block css %}<link rel="stylesheet" href="/static/css/pages/shell.css">{% block css2 %}{% endblock %}{% endblock %}
+{% block shell %}
+<div class="shell">
+  <aside class="sidebar" id="sidebar" aria-label="Menu {{ 'admin' if panel == 'admin' else 'anggota' }}">
+    <a href="{{ '/admin' if panel == 'admin' else '/' }}" class="brand">
+      <span class="mark" aria-hidden="true">A</span><span class="name">{{ "Admin" if panel == "admin" else "Aksara" }}</span>
+    </a>
+    <nav class="stack" style="gap:2px">
+      {% if panel == "admin" %}{% include "partials/sidebar_admin.html" %}{% else %}{% include "partials/sidebar_member.html" %}{% endif %}
+    </nav>
+  </aside>
+  <div class="scrim" data-side-close></div>
+  <div class="main">
+    <div class="topbar">
+      <div class="row gap-8">
+        <button type="button" class="icon-btn only-m" data-side-open aria-label="Buka menu" aria-controls="sidebar">{{ icon("menu") }}</button>
+        <button type="button" class="icon-btn only-d" data-side-collapse aria-label="Lipat atau buka sidebar">{{ icon("side") }}</button>
+      </div>
+      <div class="row gap-12">
+        <button type="button" class="theme-btn" data-theme-toggle aria-pressed="true">Mode terang</button>
+        <span class="avatar" title="{{ user.name }}" aria-label="Akun: {{ user.name }}">{{ user.name[:2]|upper }}</span>
+      </div>
+    </div>
+    <main id="main" class="content">{% block content %}{% endblock %}</main>
+  </div>
+</div>
+{% endblock %}
